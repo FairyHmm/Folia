@@ -1,16 +1,58 @@
-# React + Vite
+# Folia
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CV scanner and personalised skill graph.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Prerequisites
+- [pnpm](https://pnpm.io/installation)
+- Node.js (v18+)
 
-## React Compiler
+### Install
+```bash
+pnpm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Run the app
+```bash
+pnpm dev
+```
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-## Expanding the ESLint configuration
+### Build
+```bash
+pnpm build
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+
+```
+.
+├── api/                # API routes and server logic
+├── public/             # Static files
+├── src/                # Source code
+│   ├── app/            # Main app files
+│   │   ├── styles/     # Global styles and theme
+│   │   ├── App.jsx     # Root component
+│   │   └── main.jsx    # Entry point
+│   ├── features/       # Feature modules
+│   │   ├── auth/       # Authentication
+│   │   ├── chat/       # Chat functionality
+│   │   ├── graph/      # Graph visualization
+│   │   └── upload/     # File upload
+│   └── shared/         # Shared code
+│       ├── assets/     # Static assets
+│       ├── components/ # Reusable components
+│       ├── data/       # Static data
+│       ├── hooks/      # Custom hooks
+│       ├── store/      # State management
+│       ├── styles/     # Shared styles
+│       └── utils/      # Utility functions
+├── index.html          # HTML entry point
+├── vercel.json         # Vercel configuration
+├── vite.config.js      # Vite configuration
+├── package.json
+└── pnpm-lock.yaml
+```
+
+---
