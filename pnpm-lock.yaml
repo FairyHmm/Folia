@@ -38,6 +38,15 @@ importers:
       react-force-graph-2d:
         specifier: ^1.29.1
         version: 1.29.1(react@19.2.6)
+      react-force-graph-3d:
+        specifier: ^1.29.1
+        version: 1.29.1(react@19.2.6)
+      three:
+        specifier: ^0.184.0
+        version: 0.184.0
+      three-spritetext:
+        specifier: ^1.10.0
+        version: 1.10.0(three@0.184.0)
       zustand:
         specifier: ^5.0.14
         version: 5.0.14(@types/react@19.2.15)(react@19.2.6)
@@ -851,6 +860,12 @@ packages:
     peerDependencies:
       react: '*'
 
+  react-force-graph-3d@1.29.1:
+    resolution: {integrity: sha512-5Vp+PGpYnO+zLwgK2NvNqdXHvsWLrFzpDfJW1vUA1twjo9SPvXqfUYQrnRmAbD+K2tOxkZw1BkbH31l5b4TWHg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '*'
+
   react-force-graph@1.48.2:
     resolution: {integrity: sha512-VpBphuNN0X4BAl8c8h0r8M3XI18ExHfteNuUdCEzq0e9SORDi+5J2jpa2uNm9TQhoyXiUQjkIc1zvwIymaqdWw==}
     engines: {node: '>=12'}
@@ -964,6 +979,12 @@ packages:
     engines: {node: '>=12'}
     peerDependencies:
       three: '>=0.179'
+
+  three-spritetext@1.10.0:
+    resolution: {integrity: sha512-t08iP1FCU1lQh8T5MmCpdijKgas8GDHJE0LqMGBuVu3xqMMpFnEZhTlih7FlxLPQizHIGoumUSpfOlY1GO/Tgg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      three: '>=0.86.0'
 
   three@0.164.1:
     resolution: {integrity: sha512-iC/hUBbl1vzFny7f5GtqzVXYjMJKaTPxiCxXfrvVdBi1Sf+jhd1CAkitiFwC7mIBFCo3MrDLJG97yisoaWig0w==}
@@ -1842,6 +1863,13 @@ snapshots:
       react: 19.2.6
       react-kapsule: 2.5.7(react@19.2.6)
 
+  react-force-graph-3d@1.29.1(react@19.2.6):
+    dependencies:
+      3d-force-graph: 1.80.0
+      prop-types: 15.8.1
+      react: 19.2.6
+      react-kapsule: 2.5.7(react@19.2.6)
+
   react-force-graph@1.48.2(aframe@1.7.1)(react@19.2.6)(three@0.184.0):
     dependencies:
       3d-force-graph: 1.80.0
@@ -1971,6 +1999,10 @@ snapshots:
       float-tooltip: 1.7.5
       kapsule: 1.16.3
       polished: 4.3.1
+      three: 0.184.0
+
+  three-spritetext@1.10.0(three@0.184.0):
+    dependencies:
       three: 0.184.0
 
   three@0.164.1: {}
