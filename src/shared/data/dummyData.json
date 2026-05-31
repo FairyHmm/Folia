@@ -1,13 +1,92 @@
-{
-  "nodes": [
-    { "id": "1", "name": "Core Web", "color": "#0f0" },
-    { "id": "2", "name": "HTML", "color": "#0f0" },
-    { "id": "3", "name": "CSS", "color": "#ff0" },
-    { "id": "4", "name": "JS", "color": "#f00" }
-  ],
-  "links": [
-    { "source": "1", "target": "2", "color": "#fff" },
-    { "source": "1", "target": "3", "color": "#0ff" },
-    { "source": "1", "target": "4", "color": "#0ff" }
-  ]
-}
+[
+  {
+    "title": "Web UI/UX Engineer",
+    "domains": {
+      "Web Frontend": {
+        "Core Web": ["HTML", "CSS", "JavaScript"],
+        "Web Frameworks": ["JavaScript", "*React", "*Vue", "*Angular"]
+      },
+      "Design": {
+        "Design Tools": ["Figma", "Sketch"]
+      }
+    }
+  },
+  {
+    "title": "Web Backend Engineer",
+    "domains": {
+      "Core Backend Systems": {
+        "Languages": ["Python", "JavaScript", "Go", "Java"],
+        "API Architecture": ["REST", "GraphQL", "gRPC"]
+      },
+      "Databases & Storage": {
+        "Relational": ["PostgreSQL", "MySQL"],
+        "NoSQL": ["MongoDB", "Redis"]
+      }
+    }
+  },
+  {
+    "title": "Cross-Platform Mobile Engineer",
+    "domains": {
+      "Hybrid Runtimes": {
+        "Languages": ["JavaScript", "TypeScript", "Dart"],
+        "Mobile Frameworks": ["*React Native", "*Flutter"]
+      },
+      "Native Integrations": {
+        "Platform Languages": ["Swift", "Kotlin"],
+        "Design Tools": ["Figma", "Sketch"]
+      }
+    }
+  },
+  {
+    "title": "Cloud Infrastructure Engineer",
+    "domains": {
+      "Platform Automation": {
+        "Containers": ["Docker", "Kubernetes"],
+        "Infrastructure-as-Code": ["Terraform", "Ansible"]
+      },
+      "Cloud Architecture": {
+        "Public Clouds": ["AWS", "Azure", "GCP"],
+        "Scripting": ["Bash", "Python"]
+      }
+    }
+  },
+  {
+    "title": "Big Data Platform Engineer",
+    "domains": {
+      "Data Infrastructure": {
+        "Processing": ["*Spark", "Kafka"],
+        "Orchestration": ["Airflow", "Prefect"]
+      },
+      "Analytical Storage": {
+        "Cloud Warehouses": ["Snowflake", "BigQuery"],
+        "Data Lakes": ["AWS S3", "Azure Blob"]
+      }
+    }
+  },
+  {
+    "title": "MLOps Engineer",
+    "domains": {
+      "Pipeline Lifecycle": {
+        "Experiment Tracking": ["MLflow", "Weights & Biases"],
+        "Containers": ["Docker", "Kubernetes"]
+      },
+      "Production Serving": {
+        "API Frameworks": ["*FastAPI", "*Flask", "Python"],
+        "Vector Databases": ["Pinecone", "Redis"]
+      }
+    }
+  },
+  {
+    "title": "Application Security Engineer",
+    "domains": {
+      "SecOps & Auditing": {
+        "Scanning Tools": ["SonarQube", "OWASP ZAP"],
+        "Access Control": ["OAuth2", "JWT"]
+      },
+      "Infrastructure Hardening": {
+        "Containers": ["Docker", "Kubernetes"],
+        "Cloud Platforms": ["AWS", "Azure"]
+      }
+    }
+  }
+]
