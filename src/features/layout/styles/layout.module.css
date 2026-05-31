@@ -1,0 +1,12 @@
+.layout-root {
+  width: 100vw;
+  height: 100vh;
+  background: var(--mantine-color-body);
+}
+
+.layout-panel {
+  position: fixed;
+  top: var(--mantine-spacing-lg);
+  right: var(--mantine-spacing-lg);
+  width: 220px;
+}
