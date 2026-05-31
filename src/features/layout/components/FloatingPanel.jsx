@@ -1,33 +1,65 @@
-import { Accordion, Stack, Group, Text } from "@mantine/core";
+import { Accordion, Stack, Group, Text, Button } from "@mantine/core";
+import { layoutStore, setMode } from "../store/layoutStore";
 
-export default function FloatingPanel({ sections, useTools }) {
-  const tools = useTools();
+const MODE_BUTTONS = {
+  graph: [
+    { label: "Upload", mode: "upload" },
+    { label: "Mentor", mode: "mentor" },
+  ],
+  upload: [{ label: "Graph", mode: "graph" }],
+  mentor: [{ label: "Graph", mode: "graph" }],
+};
+
+export default function FloatingPanel({ sections, tools }) {
+  const activeMode = layoutStore((s) => s.activeMode);
   const defaultOpen = sections.filter((s) => s.defaultOpen).map((s) => s.id);
 
   return (
-    <Accordion
-      multiple
-      defaultValue={defaultOpen}
-      variant="separated"
-      radius="lg"
-    >
-      {sections.map((section) => (
-        <Accordion.Item key={section.id} value={section.id}>
-          <Accordion.Control fw={600} fz="sm">
-            {section.label}
-          </Accordion.Control>
-          <Accordion.Panel>
-            <Stack gap="sm">
-              {section.tools.map((tool) => {
-                return (
-                  <ToolRow key={tool.id} tool={tool} state={tools[tool.id]} />
-                );
-              })}
-            </Stack>
-          </Accordion.Panel>
-        </Accordion.Item>
+    <Stack gap="xs">
+      <ModeSwitcher activeMode={activeMode} />
+
+      <Accordion
+        multiple
+        defaultValue={defaultOpen}
+        variant="separated"
+        radius="lg"
+      >
+        {sections.map((section) => (
+          <Accordion.Item key={section.id} value={section.id}>
+            <Accordion.Control fw={600} fz="sm">
+              {section.label}
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Stack gap="sm">
+                {section.tools.map((tool) => {
+                  const state = tools[tool.id];
+                  if (!state) return null;
+                  return <ToolRow key={tool.id} tool={tool} state={state} />;
+                })}
+              </Stack>
+            </Accordion.Panel>
+          </Accordion.Item>
+        ))}
+      </Accordion>
+    </Stack>
+  );
+}
+
+function ModeSwitcher({ activeMode }) {
+  return (
+    <Group grow gap="xs">
+      {MODE_BUTTONS[activeMode].map(({ label, mode }) => (
+        <Button
+          key={mode}
+          variant="default"
+          size="xs"
+          radius="lg"
+          onClick={() => setMode(mode)}
+        >
+          {label}
+        </Button>
       ))}
-    </Accordion>
+    </Group>
   );
 }
 
