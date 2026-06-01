@@ -1,11 +1,12 @@
 import { useEffect } from "react";
-import { graphStore } from "../store/graphStore";
+import { graphConfigStore } from "../store/graphConfigStore";
 
 export function useGraphPhysics(instanceRef) {
-  const charge = graphStore((s) => s.charge);
-  const distance = graphStore((s) => s.distance);
-  const gravity = graphStore((s) => s.gravity);
-  const linkStrength = graphStore((s) => s.linkStrength);
+  // Select ONLY the forces slice from the config store
+  const charge = graphConfigStore((s) => s.forces.charge);
+  const distance = graphConfigStore((s) => s.forces.distance);
+  const gravity = graphConfigStore((s) => s.forces.gravity);
+  const linkStrength = graphConfigStore((s) => s.forces.linkStrength);
 
   useEffect(() => {
     const fg = instanceRef.current;

@@ -1,24 +1,40 @@
-import { graphStore } from "../store/graphStore";
+import { graphConfigStore } from "../store/graphConfigStore";
+import { graphDataStore } from "../store/graphDataStore";
 
 export function useGraphPanelTools() {
-  const store = graphStore();
+  const display = graphConfigStore((s) => s.display);
+  const forces = graphConfigStore((s) => s.forces);
+  const updateDisplay = graphConfigStore((s) => s.updateDisplay);
+  const updateForces = graphConfigStore((s) => s.updateForces);
+
+  const rerollStyles = graphDataStore((s) => s.rerollStyles);
+
+  const bindDisplay = (id) => ({
+    value: display[id],
+    onChange: (val) => updateDisplay(id, val),
+  });
+
+  const bindForces = (id) => ({
+    value: forces[id],
+    onChange: (val) => updateForces(id, val),
+  });
 
   return {
-    dimension: {
-      value: store.activeView,
-      onChange: store.setView,
-    },
-    labels: {
-      checked: store.labels,
-      onChange: (e) =>
-        store.setLabels(e?.currentTarget?.checked ?? e),
-    },
-    charge: { value: store.charge, onChange: store.setCharge },
-    distance: { value: store.distance, onChange: store.setDistance },
-    gravity: { value: store.gravity, onChange: store.setGravity },
+    dimension: { ...bindDisplay("dimension") },
+    nodeSize: { ...bindDisplay("nodeSize") },
+    glowSize: { ...bindDisplay("glowSize") },
+    glowOpacity: { ...bindDisplay("glowOpacity") },
+    ringSize: { ...bindDisplay("ringSize") },
+    ringThickness: { ...bindDisplay("ringThickness") },
+    ringOpacity: { ...bindDisplay("ringOpacity") },
+
+    charge: { ...bindForces("charge") },
+    gravity: { ...bindForces("gravity") },
+    distance: { ...bindForces("distance") },
+    linkStrength: { ...bindForces("linkStrength") },
 
     reroll: {
-      onClick: store.rerollStyles,
+      onClick: rerollStyles,
     },
   };
 }

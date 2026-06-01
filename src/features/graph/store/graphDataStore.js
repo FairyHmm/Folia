@@ -5,7 +5,7 @@ import rolesData from "../../../shared/data/dummyData.json";
 
 const parsedData = parseRoles(rolesData);
 
-export const graphStore = create((set, get) => ({
+export const graphDataStore = create((set, get) => ({
   graphData: {
     ...parsedData,
     nodes: parsedData.nodes.map((node) => ({
@@ -13,21 +13,6 @@ export const graphStore = create((set, get) => ({
       ...applyNodeStyles(node),
     })),
   },
-
-  activeView: "2d",
-  labels: true,
-
-  charge: -250,
-  distance: 60,
-  gravity: 0.2,
-  linkStrength: 0.5,
-
-  setView: (v) => set({ activeView: v }),
-  setLabels: (v) => set({ labels: v }),
-  setCharge: (v) => set({ charge: v }),
-  setDistance: (v) => set({ distance: v }),
-  setGravity: (v) => set({ gravity: v }),
-  setLinkStrength: (v) => set({ linkStrength: v }),
 
   rerollStyles: () => {
     const currentData = get().graphData;

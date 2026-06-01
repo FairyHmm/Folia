@@ -2,8 +2,8 @@ import { Slider, Switch, SegmentedControl, Button } from "@mantine/core";
 
 export const graphPanel = [
   {
-    id: "view",
-    label: "View",
+    id: "display",
+    label: "Display",
     defaultOpen: true,
     tools: [
       {
@@ -19,19 +19,92 @@ export const graphPanel = [
           ],
         },
       },
+      // --- Core Node ---
       {
-        id: "labels",
-        label: "Labels",
-        component: Switch,
-        layout: "row",
-        props: { size: "xs" },
+        id: "nodeSize",
+        label: "Node Size",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0.1, max: 3, step: 0.1 },
+      },
+      // --- Glow Layer ---
+      {
+        id: "glowSize",
+        label: "Glow Size",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0, max: 5, step: 0.1 },
+      },
+      {
+        id: "glowOpacity",
+        label: "Glow Opacity",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0, max: 1, step: 0.05 },
+      },
+      // --- Ring Layer ---
+      {
+        id: "ringSize",
+        label: "Ring Size",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0, max: 3, step: 0.1 },
+      },
+      {
+        id: "ringThickness",
+        label: "Ring Thickness",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0.5, max: 5, step: 0.5 },
+      },
+      {
+        id: "ringOpacity",
+        label: "Ring Opacity",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0, max: 1, step: 0.05 },
       },
     ],
   },
   {
-    id: "style",
-    label: "Style",
-    defaultOpen: true,
+    id: "forces",
+    label: "Forces",
+    defaultOpen: false,
+    tools: [
+      {
+        id: "charge",
+        label: "Repel Force",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: -500, max: 0, step: 10 },
+      },
+      {
+        id: "gravity",
+        label: "Center Force",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0, max: 1, step: 0.01 },
+      },
+      {
+        id: "distance",
+        label: "Link Distance",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 10, max: 200, step: 5 },
+      },
+      {
+        id: "linkStrength",
+        label: "Link Force",
+        component: Slider,
+        layout: "stack",
+        props: { size: "xs", min: 0, max: 1, step: 0.05 },
+      },
+    ],
+  },
+  {
+    id: "interaction",
+    label: "Interaction",
+    defaultOpen: false,
     tools: [
       {
         id: "reroll",
@@ -43,34 +116,6 @@ export const graphPanel = [
           variant: "default",
           children: "Reroll",
         },
-      },
-    ],
-  },
-  {
-    id: "physics",
-    label: "Physics",
-    defaultOpen: false,
-    tools: [
-      {
-        id: "charge",
-        label: "Charge",
-        component: Slider,
-        layout: "stack",
-        props: { size: "xs", min: -500, max: -10 },
-      },
-      {
-        id: "distance",
-        label: "Distance",
-        component: Slider,
-        layout: "stack",
-        props: { size: "xs", min: 10, max: 200 },
-      },
-      {
-        id: "gravity",
-        label: "Gravity",
-        component: Slider,
-        layout: "stack",
-        props: { size: "xs", min: 0, max: 1, step: 0.01 },
       },
     ],
   },
