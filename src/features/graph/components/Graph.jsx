@@ -26,6 +26,7 @@ export default function Graph() {
         const style = resolveNode2D(node, scale);
         renderNode2D(node, ctx, scale, store.labels, style);
       }}
+      linkColor={(link) => link.color || "#fffa"}
     />
   ) : (
     <ForceGraph3D
