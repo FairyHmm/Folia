@@ -28,7 +28,19 @@ export const TIER_PRESETS = {
 export const CORE_TOKENS = {
   textStyle: "#edf2f7",
   fontFamily: "Helvetica Neue, sans-serif",
+  glowInnerAlpha: "88",
+  ringAlpha: "44",
+  ringOpacity3D: 0.5,
+  glowOpacity3D: 0.6,
 };
 
-export const RANDOM_SHAPES = ["circle", "square", "triangle"];
-export const RANDOM_COLORS = ["#d32f2f", "#388e3c", "#fbc02d"];
+export const COLORS = ["#d32f2f", "#388e3c", "#fbc02d"];
+export const SIZE_MULTIPLIERS = [0.5, 1, 1.5, 2, 2.5];
+export const GLOW_MULTIPLIERS = [2, 3, 4, 5, 6];
+export const RING_MULTIPLIERS = [1.2, 1.4, 1.6, 1.8];
+
+export const SHAPES = {
+  circle: { labelPosition: "below", labelType: "sprite" },
+  square: { labelPosition: "below", labelType: "sprite" },
+  triangle: { labelPosition: "below", labelType: "sprite" },
+};

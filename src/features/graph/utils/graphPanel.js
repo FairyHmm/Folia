@@ -1,4 +1,4 @@
-import { Slider, Switch, SegmentedControl } from "@mantine/core";
+import { Slider, Switch, SegmentedControl, Button } from "@mantine/core";
 
 export const graphPanel = [
   {
@@ -25,6 +25,24 @@ export const graphPanel = [
         component: Switch,
         layout: "row",
         props: { size: "xs" },
+      },
+    ],
+  },
+  {
+    id: "style",
+    label: "Style",
+    defaultOpen: true,
+    tools: [
+      {
+        id: "reroll",
+        label: "Reroll Styles",
+        component: Button,
+        layout: "row",
+        props: {
+          size: "xs",
+          variant: "default",
+          children: "Reroll",
+        },
       },
     ],
   },

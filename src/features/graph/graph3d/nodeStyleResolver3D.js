@@ -1,42 +1,37 @@
-import {
-  TIER_PRESETS,
-  CORE_TOKENS,
-  RANDOM_SHAPES,
-  RANDOM_COLORS,
-} from "../utils/graphStyleTokens";
-
-import { STYLES_DEFAULTS } from "./graphStyles3D";
+import { TIER_PRESETS, CORE_TOKENS } from "../utils/graphStyleTokens";
 
 export function resolveNode3D(node) {
   const tier = TIER_PRESETS[node.tier] || TIER_PRESETS[4];
-  const radius = Math.sqrt(node.val || 1) * tier.multiplier;
+  const radius = 2 * tier.multiplier * (node.sizeMultiplier || 1);
 
-  const hash = Array.from(node.id).reduce(
-    (acc, char) => acc + char.charCodeAt(0),
-    0,
-  );
+  const color = node.color || "#ffffff";
+  const ringColor = node.ringColor || color;
+  const labelPosition = node.labelPosition || "below";
 
-  const color = RANDOM_COLORS[hash % RANDOM_COLORS.length];
-  const shape = RANDOM_SHAPES[hash % RANDOM_SHAPES.length];
+  let textOffset = 1.5 + radius * 0.1;
+  if (labelPosition === "inside") textOffset = 0;
 
   return {
     radius,
-    shape,
+    shape: node.shape || "circle",
     color,
-
+    ringColor,
     tier: node.tier,
     label: node.label || "",
+    id: node.id,
+    labelPosition,
+    labelType: node.labelType || "sprite",
 
     textColor: CORE_TOKENS.textStyle,
     textHeight: 8 * tier.fontScale,
-    textOffset: 1.5 + radius * 0.1,
+    textOffset,
 
-    ringRadius: radius * STYLES_DEFAULTS.ringScale,
-    ringOpacity: STYLES_DEFAULTS.ringOpacity,
+    ringRadius: radius * (node.ringMultiplier || 1.4),
+    ringOpacity: CORE_TOKENS.ringOpacity3D,
 
-    glowRadius: radius * STYLES_DEFAULTS.glowScale,
-    glowOpacity: STYLES_DEFAULTS.glowOpacity,
-    glowDepthWrite: STYLES_DEFAULTS.glowDepthWrite,
-    glowDepthTest: STYLES_DEFAULTS.glowDepthTest,
+    glowRadius: radius * (node.glowMultiplier || 1),
+    glowOpacity: CORE_TOKENS.glowOpacity3D,
+    glowDepthWrite: false,
+    glowDepthTest: true,
   };
 }

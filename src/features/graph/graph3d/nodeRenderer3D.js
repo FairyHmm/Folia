@@ -109,19 +109,17 @@ export function renderNode3D(style) {
   nodeGroup.add(coreMesh);
 
   // LABEL
-  if (style.label) {
+  if (style.label && style.labelType !== "html") {
     const label = new SpriteText(style.label);
-
     label.color = style.textColor;
     label.textHeight = style.textHeight;
+
+    // Apply the offset based on "below" vs "inside"
     label.center.y = style.textOffset;
 
-    // IMPORTANT: rendering only, no interaction
     label.raycast = () => {};
     label.userData = { ignoreRaycast: true };
-
     label.renderOrder = 3;
-
     nodeGroup.add(label);
   }
 

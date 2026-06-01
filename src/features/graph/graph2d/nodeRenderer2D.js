@@ -40,7 +40,7 @@ export function renderNode2D(node, ctx, scale, showLabels, style) {
 
   // 2. Structural Ring Layer
   ctx.beginPath();
-  ctx.arc(x, y, style.radius * 1.4, 0, Math.PI * 2);
+  ctx.arc(x, y, style.ringRadius, 0, Math.PI * 2);
   ctx.strokeStyle = style.ringColor;
   ctx.stroke();
 
@@ -51,19 +51,19 @@ export function renderNode2D(node, ctx, scale, showLabels, style) {
 
   // 4. Typography Layout Layer
   if (!showLabels) return;
+
+  // If labelType is html, we skip canvas drawing (handled by React later)
+  if (style.labelType === "html") return;
+
   const alpha = labelAlpha(style.visibilityThreshold, scale);
   if (alpha <= 0) return;
 
   ctx.save();
   ctx.globalAlpha = alpha;
   ctx.font = style.font;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "top";
+  ctx.textAlign = style.textAlign;
+  ctx.textBaseline = style.textBaseline;
   ctx.fillStyle = style.textColor;
-  ctx.fillText(
-    style.label,
-    x,
-    y + style.radius + (8 / scale) * style.radius * 0.4,
-  );
+  ctx.fillText(style.label, x, y + style.textYOffset);
   ctx.restore();
 }

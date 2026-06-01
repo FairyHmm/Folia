@@ -4,12 +4,7 @@ export const parseRoles = (rolesArray) => {
 
   const registerNode = (id, label, tier) => {
     if (!nodeMap.has(id)) {
-      nodeMap.set(id, {
-        id,
-        label,
-        tier,
-        val: tier === 1 ? 8 : tier === 2 ? 5.5 : tier === 3 ? 4 : 2.5,
-      });
+      nodeMap.set(id, { id, label, tier });
     }
   };
 

@@ -16,5 +16,9 @@ export function useGraphPanelTools() {
     charge: { value: store.charge, onChange: store.setCharge },
     distance: { value: store.distance, onChange: store.setDistance },
     gravity: { value: store.gravity, onChange: store.setGravity },
+
+    reroll: {
+      onClick: store.rerollStyles,
+    },
   };
 }
