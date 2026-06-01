@@ -1,13 +1,24 @@
 import * as THREE from "three";
 import SpriteText from "three-spritetext";
 
-const meshGroupCache = new Map();
+const geometryCache = new Map();
 
 const GEOMETRY_FACTORIES = {
   circle: (r) => new THREE.SphereGeometry(r, 24, 24),
   square: (r) => new THREE.BoxGeometry(r * 1.4, r * 1.4, r * 1.4),
   triangle: (r) => new THREE.ConeGeometry(r, r * 2, 4),
 };
+
+function getGeometry(shape, radius) {
+  const key = `${shape}_${radius.toFixed(2)}`;
+  if (!geometryCache.has(key)) {
+    const factory = GEOMETRY_FACTORIES[shape] || GEOMETRY_FACTORIES.circle;
+    geometryCache.set(key, factory(radius));
+  }
+  return geometryCache.get(key);
+}
+
+const textureCache = new Map();
 
 function createRingTexture(color, isGlow = false) {
   const canvas = document.createElement("canvas");
@@ -22,9 +33,7 @@ function createRingTexture(color, isGlow = false) {
     const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 64);
 
     g.addColorStop(0.0, `${color}AA`);
-    g.addColorStop(0.2, `${color}66`);
-    g.addColorStop(0.5, `${color}22`);
-    g.addColorStop(1.0, "rgba(0,0,0,0)");
+    g.addColorStop(1.0, `${color}00`);
 
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, 128, 128);
@@ -39,19 +48,20 @@ function createRingTexture(color, isGlow = false) {
   return new THREE.CanvasTexture(canvas);
 }
 
-export function renderNode3D(style) {
-  const cacheKey = `${style.shape}_${style.color}_${style.tier}_${style.label}`;
-
-  if (meshGroupCache.has(cacheKey)) {
-    return meshGroupCache.get(cacheKey).clone();
+function getTexture(color, isGlow) {
+  const key = `${color}_${isGlow}`;
+  if (!textureCache.has(key)) {
+    textureCache.set(key, createRingTexture(color, isGlow));
   }
+  return textureCache.get(key);
+}
 
+export function renderNode3D(style) {
   const nodeGroup = new THREE.Group();
   const threeColor = new THREE.Color(style.color);
 
   // GLOW
-  const glowTexture = createRingTexture(style.color, true);
-
+  const glowTexture = getTexture(style.color, true);
   const glowMaterial = new THREE.SpriteMaterial({
     map: glowTexture,
     transparent: true,
@@ -63,19 +73,16 @@ export function renderNode3D(style) {
 
   const glowSprite = new THREE.Sprite(glowMaterial);
 
-  glowSprite.scale.set(style.glowRadius * 3.4, style.glowRadius * 3.4, 1);
+  glowSprite.scale.set(style.glowRadius * 2, style.glowRadius * 2, 1);
 
   glowSprite.renderOrder = 0;
-
-  // Remove from interaction system
   glowSprite.raycast = () => {};
   glowSprite.userData = { ignoreRaycast: true };
 
   nodeGroup.add(glowSprite);
 
   // RING
-  const ringTexture = createRingTexture(style.color, false);
-
+  const ringTexture = getTexture(style.color, false);
   const ringMaterial = new THREE.SpriteMaterial({
     map: ringTexture,
     transparent: true,
@@ -85,25 +92,17 @@ export function renderNode3D(style) {
 
   const ringSprite = new THREE.Sprite(ringMaterial);
 
-  ringSprite.scale.set(style.ringRadius * 2, style.ringRadius * 2, 1);
-
+  ringSprite.scale.set(style.ringRadius * 2.5, style.ringRadius * 2.5, 1);
   ringSprite.renderOrder = 1;
-
   nodeGroup.add(ringSprite);
 
   // CORE
-  const geometryFactory =
-    GEOMETRY_FACTORIES[style.shape] || GEOMETRY_FACTORIES.circle;
+  const geometry = getGeometry(style.shape, style.radius);
+  const coreMaterial = new THREE.MeshBasicMaterial({
+    color: threeColor,
+  });
 
-  const coreMesh = new THREE.Mesh(
-    geometryFactory(style.radius),
-    new THREE.MeshStandardMaterial({
-      color: threeColor,
-      roughness: 0.65,
-      metalness: 0.0,
-    }),
-  );
-
+  const coreMesh = new THREE.Mesh(geometry, coreMaterial);
   coreMesh.renderOrder = 2;
 
   nodeGroup.add(coreMesh);
@@ -113,17 +112,14 @@ export function renderNode3D(style) {
     const label = new SpriteText(style.label);
     label.color = style.textColor;
     label.textHeight = style.textHeight;
-
-    // Apply the offset based on "below" vs "inside"
     label.center.y = style.textOffset;
-
     label.raycast = () => {};
     label.userData = { ignoreRaycast: true };
     label.renderOrder = 3;
     nodeGroup.add(label);
   }
 
-  meshGroupCache.set(cacheKey, nodeGroup);
+  nodeGroup.userData = { nodeId: style.id };
 
   return nodeGroup;
 }
