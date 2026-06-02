@@ -12,8 +12,8 @@ import { renderNode3D } from "../graph3d/nodeRenderer3D";
 export default function Graph() {
   const ref = useRef(null);
 
-  // Select ONLY what this component needs from the separated stores
   const graphData = graphDataStore((s) => s.graphData);
+  const display = graphConfigStore((s) => s.display);
   const dimension = graphConfigStore((s) => s.display.dimension);
 
   useGraphPhysics(ref);
@@ -27,8 +27,8 @@ export default function Graph() {
     <ForceGraph2D
       {...commonProps}
       nodeCanvasObject={(node, ctx, scale) => {
-        const style = resolveNode2D(node, scale);
-        renderNode2D(node, ctx, scale, true, style); // showLabels hardcoded to true
+        const style = resolveNode2D(node, scale, display);
+        renderNode2D(node, ctx, scale, true, style);
       }}
       linkColor={(link) => link.color || "#fffa"}
     />
@@ -38,7 +38,7 @@ export default function Graph() {
       showNavInfo={false}
       backgroundColor="#0000"
       nodeThreeObject={(node) => {
-        const style = resolveNode3D(node);
+        const style = resolveNode3D(node, display);
         return renderNode3D(style);
       }}
     />
