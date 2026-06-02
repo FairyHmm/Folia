@@ -1,25 +1,24 @@
 import { layoutStore } from "../store/layoutStore";
-import Upload from "../../upload/components/Upload";
-import Mentor from "../../mentor/components/Mentor";
-
-const OVERLAYS = {
-  upload: Upload,
-  mentor: Mentor,
-};
 
 export function useLayoutMode() {
-  const modeKey = layoutStore((s) => s.activeMode);
+  const activeMode = layoutStore((s) => s.activeMode);
   const modes = layoutStore((s) => s.modes);
 
-  const allTools = {
-    graph: modes.graph.useTools(),
-    upload: modes.upload.useTools(),
-    mentor: modes.mentor.useTools(),
-  };
+  const currentMode = modes[activeMode];
+
+  const graphTools = modes.graph.useTools();
+  const uploadTools = modes.upload.useTools();
+  const mentorTools = modes.mentor.useTools();
+
+  const tools =
+    activeMode === "graph" ? graphTools :
+    activeMode === "upload" ? uploadTools :
+    mentorTools;
 
   return {
-    mode: modes[modeKey],
-    tools: allTools[modeKey],
-    Overlay: OVERLAYS[modeKey] ?? null,
+    mode: currentMode,
+    tools: tools,
+    useToolValue: currentMode.useToolValue,
+    Overlay: currentMode.Overlay,
   };
 }

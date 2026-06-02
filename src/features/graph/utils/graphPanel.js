@@ -8,6 +8,7 @@ export const graphPanel = [
     tools: [
       {
         id: "dimension",
+        group: "display",
         label: "Dimension",
         component: SegmentedControl,
         layout: "row",
@@ -22,6 +23,7 @@ export const graphPanel = [
       // --- Core Node ---
       {
         id: "nodeSize",
+        group: "display",
         label: "Node Size",
         component: Slider,
         layout: "stack",
@@ -30,6 +32,7 @@ export const graphPanel = [
       // --- Glow Layer ---
       {
         id: "glowSize",
+        group: "display",
         label: "Glow Size",
         component: Slider,
         layout: "stack",
@@ -37,6 +40,7 @@ export const graphPanel = [
       },
       {
         id: "glowOpacity",
+        group: "display",
         label: "Glow Opacity",
         component: Slider,
         layout: "stack",
@@ -45,6 +49,7 @@ export const graphPanel = [
       // --- Ring Layer ---
       {
         id: "ringSize",
+        group: "display",
         label: "Ring Size",
         component: Slider,
         layout: "stack",
@@ -52,6 +57,7 @@ export const graphPanel = [
       },
       {
         id: "ringThickness",
+        group: "display",
         label: "Ring Thickness",
         component: Slider,
         layout: "stack",
@@ -59,6 +65,7 @@ export const graphPanel = [
       },
       {
         id: "ringOpacity",
+        group: "display",
         label: "Ring Opacity",
         component: Slider,
         layout: "stack",
@@ -73,6 +80,7 @@ export const graphPanel = [
     tools: [
       {
         id: "charge",
+        group: "forces",
         label: "Repel Force",
         component: Slider,
         layout: "stack",
@@ -80,6 +88,7 @@ export const graphPanel = [
       },
       {
         id: "gravity",
+        group: "forces",
         label: "Center Force",
         component: Slider,
         layout: "stack",
@@ -87,6 +96,7 @@ export const graphPanel = [
       },
       {
         id: "distance",
+        group: "forces",
         label: "Link Distance",
         component: Slider,
         layout: "stack",
@@ -94,6 +104,7 @@ export const graphPanel = [
       },
       {
         id: "linkStrength",
+        group: "forces",
         label: "Link Force",
         component: Slider,
         layout: "stack",

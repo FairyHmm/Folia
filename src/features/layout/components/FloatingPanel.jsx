@@ -1,3 +1,4 @@
+import React from "react";
 import { Accordion, Stack, Group, Text, Button } from "@mantine/core";
 import { layoutStore, setMode } from "../store/layoutStore";
 
@@ -10,8 +11,9 @@ const MODE_BUTTONS = {
   mentor: [{ label: "Graph", mode: "graph" }],
 };
 
-export default function FloatingPanel({ sections, tools }) {
+export default function FloatingPanel({ sections, tools, useToolValue }) {
   const activeMode = layoutStore((s) => s.activeMode);
+
   const defaultOpen = sections.filter((s) => s.defaultOpen).map((s) => s.id);
 
   return (
@@ -29,13 +31,17 @@ export default function FloatingPanel({ sections, tools }) {
             <Accordion.Control fw={600} fz="sm">
               {section.label}
             </Accordion.Control>
+
             <Accordion.Panel>
               <Stack gap="sm">
-                {section.tools.map((tool) => {
-                  const state = tools[tool.id];
-                  if (!state) return null;
-                  return <ToolRow key={tool.id} tool={tool} state={state} />;
-                })}
+                {section.tools.map((tool) => (
+                  <ToolRow
+                    key={tool.id}
+                    tool={tool}
+                    tools={tools}
+                    useToolValue={useToolValue}
+                  />
+                ))}
               </Stack>
             </Accordion.Panel>
           </Accordion.Item>
@@ -68,16 +74,41 @@ const layoutProps = {
   row: { justify: "space-between", wrap: "nowrap", w: "100%" },
 };
 
-function ToolRow({ tool, state }) {
+const ToolRow = React.memo(function ToolRow({ tool, tools, useToolValue }) {
   const Component = tool.component;
   const Wrapper = tool.layout === "stack" ? Stack : Group;
+
+  if (tool.id === "reroll") {
+    return (
+      <Wrapper {...layoutProps[tool.layout]}>
+        <Text size="xs" c="dimmed" fw={500}>
+          {tool.label}
+        </Text>
+
+        <Component {...tool.props} onClick={tools.rerollStyles} />
+      </Wrapper>
+    );
+  }
+
+  const value = useToolValue(tool);
+
+  const onChange = (v) => {
+    if (tool.group === "display") {
+      tools.updateDisplay(tool.id, v);
+    }
+
+    if (tool.group === "forces") {
+      tools.updateForces(tool.id, v);
+    }
+  };
 
   return (
     <Wrapper {...layoutProps[tool.layout]}>
       <Text size="xs" c="dimmed" fw={500}>
-        {state.label ?? tool.label}
+        {tool.label}
       </Text>
-      <Component {...tool.props} {...state} />
+
+      <Component {...tool.props} value={value} onChange={onChange} />
     </Wrapper>
   );
-}
+});
