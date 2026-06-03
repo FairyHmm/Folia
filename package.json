@@ -11,15 +11,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mantine/core": "^9.2.2",
-    "@mantine/form": "^9.2.2",
-    "@mantine/hooks": "^9.2.2",
+    "@mantine/core": "^9.3.0",
+    "@mantine/dropzone": "^9.3.0",
+    "@mantine/form": "^9.3.0",
+    "@mantine/hooks": "^9.3.0",
     "d3-force": "^3.0.0",
     "d3-force-3d": "^3.0.6",
     "framer-motion": "^12.40.0",
     "lucide-react": "^1.17.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "mammoth": "^1.12.0",
+    "pdfjs-dist": "^6.0.227",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-dropzone": "^15.0.0",
     "react-force-graph": "^1.48.2",
     "react-force-graph-2d": "^1.29.1",
     "react-force-graph-3d": "^1.29.1",
@@ -32,6 +36,6 @@
     "postcss": "^8.5.15",
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
-    "vite": "^8.0.14"
+    "vite": "^8.0.16"
   }
 }
