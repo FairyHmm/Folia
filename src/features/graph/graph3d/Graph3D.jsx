@@ -1,5 +1,6 @@
-import { memo } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import ForceGraph3D from "react-force-graph-3d";
+import { graphConfigStore } from "../store/graphConfigStore";
 import { resolveNode3D } from "./nodeStyleResolver3D";
 import { renderNode3D } from "./nodeRenderer3D";
 
@@ -7,19 +8,51 @@ const Graph3D = memo(function Graph3DWrapper({
   graphRef,
   commonProps,
   onEngineTick,
-  display,
 }) {
+  const fgInternalRef = useRef(null);
+  const displayRef = useRef(graphConfigStore.getState().display);
+
+  // Stable forever
+  const nodeThreeObject = useCallback((node) => {
+    const style = resolveNode3D(node, displayRef.current);
+    return renderNode3D(style);
+  }, []);
+
+  useEffect(() => {
+    // Subscribe directly to store — completely bypasses React rendering
+    const unsub = graphConfigStore.subscribe((state) => {
+      displayRef.current = state.display;
+
+      const nodes = commonProps.graphData?.nodes;
+      if (!nodes) return;
+
+      // Mutate all cached Three.js objects in place
+      for (const node of nodes) {
+        const style = resolveNode3D(node, displayRef.current);
+        renderNode3D(style);
+      }
+    });
+
+    return unsub;
+  }, [commonProps.graphData]);
+
+  const setRefs = useCallback(
+    (instance) => {
+      fgInternalRef.current = instance;
+      if (typeof graphRef === "function") graphRef(instance);
+    },
+    [graphRef],
+  );
+
   return (
     <ForceGraph3D
       {...commonProps}
-      ref={graphRef}
+      ref={setRefs}
       onEngineTick={onEngineTick}
       showNavInfo={false}
       backgroundColor="#0000"
-      nodeThreeObject={(node) => {
-        const style = resolveNode3D(node, display);
-        return renderNode3D(style);
-      }}
+      nodeThreeObject={nodeThreeObject}
+      nodeThreeObjectExtend={false}
     />
   );
 });

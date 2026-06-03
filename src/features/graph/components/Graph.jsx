@@ -9,8 +9,7 @@ export default function Graph() {
   const fgRef = useRef(null);
 
   const graphData = graphDataStore((s) => s.graphData);
-  const display = graphConfigStore((s) => s.display);
-  const dimension = display.dimension;
+  const dimension = graphConfigStore((s) => s.display.dimension);
 
   const { onEngineTick } = useGraphPhysics(fgRef, dimension);
 
@@ -34,7 +33,6 @@ export default function Graph() {
       graphRef={setGraphRef}
       commonProps={commonProps}
       onEngineTick={onEngineTick}
-      display={display}
       onLinkColor={handleLinkColor}
     />
   ) : (
@@ -42,7 +40,6 @@ export default function Graph() {
       graphRef={setGraphRef}
       commonProps={commonProps}
       onEngineTick={onEngineTick}
-      display={display}
     />
   );
 }
