@@ -5,7 +5,7 @@ const styleCache = new Map();
 export function resolveNode2D(node, scale, display = {}) {
   const tier = TIER_PRESETS[node.tier] || TIER_PRESETS[4];
   const radius =
-    2 * tier.multiplier * (node.sizeMultiplier || 1) * (display.nodeSize ?? 1);
+    tier.multiplier * (node.sizeMultiplier || 1) * (display.nodeSize ?? 1);
   const color = node.color || "#ffffff";
   const ringColor = node.ringColor || color;
   const labelPosition = node.labelPosition || "below";
@@ -25,7 +25,7 @@ export function resolveNode2D(node, scale, display = {}) {
   s.color = color;
   s.label = node.label || "";
   s.labelType = node.labelType || "sprite";
-  s.glowRadius = radius * (node.glowMultiplier || 1) * (display.glowSize ?? 1);
+  s.glowRadius = 1.5 * radius * (node.glowMultiplier || 1) * (display.glowSize ?? 1);
   s.glowInner = color;
   s.glowOpacity = display.glowOpacity ?? 0.6;
   s.ringRadius =

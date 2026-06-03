@@ -27,7 +27,7 @@ export const graphPanel = [
         label: "Node Size",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 0.1, max: 3, step: 0.1 },
+        props: { size: "xs", min: 0.1, max: 5, step: 0.1 },
       },
       // --- Glow Layer ---
       {
@@ -36,7 +36,7 @@ export const graphPanel = [
         label: "Glow Size",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 0, max: 5, step: 0.1 },
+        props: { size: "xs", min: 0.5, max: 2, step: 0.05 },
       },
       {
         id: "glowOpacity",
@@ -53,7 +53,7 @@ export const graphPanel = [
         label: "Ring Size",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 0, max: 3, step: 0.1 },
+        props: { size: "xs", min: 1, max: 3, step: 0.1 },
       },
       {
         id: "ringThickness",
@@ -61,7 +61,7 @@ export const graphPanel = [
         label: "Ring Thickness",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 0.5, max: 5, step: 0.5 },
+        props: { size: "xs", min: 1, max: 10, step: 0.5 },
       },
       {
         id: "ringOpacity",

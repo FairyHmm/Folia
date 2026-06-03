@@ -25,9 +25,9 @@ export function resolveNode3D(node, display = {}) {
   s.glowRadius = radius * (node.glowMultiplier || 1) * (display.glowSize ?? 1);
   s.glowOpacity = display.glowOpacity ?? CORE_TOKENS.glowOpacity3D;
   s.ringRadius =
-    radius * (node.ringMultiplier || 1.4) * (display.ringSize ?? 1);
+    0.5 * radius * (node.ringMultiplier || 1.4) * (display.ringSize ?? 1);
   s.ringOpacity = display.ringOpacity ?? CORE_TOKENS.ringOpacity3D;
-  s.ringThickness = display.ringThickness ?? 1;
+  s.ringThickness = 10 * display.ringThickness ?? 1;
   s.ringColor = ringColor;
   s.textColor = CORE_TOKENS.textStyle;
   s.textHeight = 8 * tier.fontScale;

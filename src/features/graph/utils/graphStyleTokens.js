@@ -1,24 +1,24 @@
 export const TIER_PRESETS = {
   1: {
-    multiplier: 2.4,
+    multiplier: 2,
     visibilityThreshold: 0.2,
     fontScale: 1.6,
     fontWeight: "600",
   },
   2: {
-    multiplier: 1.8,
+    multiplier: 1.5,
     visibilityThreshold: 0.5,
     fontScale: 1.2,
     fontWeight: "600",
   },
   3: {
-    multiplier: 1.3,
+    multiplier: 1,
     visibilityThreshold: 0.9,
     fontScale: 1.0,
     fontWeight: "400",
   },
   4: {
-    multiplier: 1.0,
+    multiplier: 0.7,
     visibilityThreshold: 1.6,
     fontScale: 0.85,
     fontWeight: "400",

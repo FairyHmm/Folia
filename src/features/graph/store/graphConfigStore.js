@@ -9,7 +9,7 @@ export const graphConfigStore = create(
         nodeSize: 1,
         glowSize: 1,
         glowOpacity: 0.6,
-        ringSize: 1,
+        ringSize: 1.5,
         ringThickness: 1,
         ringOpacity: 0.5,
       },
