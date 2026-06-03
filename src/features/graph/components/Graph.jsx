@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useCallback } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 import ForceGraph3D from "react-force-graph-3d";
 import { graphConfigStore } from "../store/graphConfigStore";
@@ -10,17 +10,24 @@ import { resolveNode3D } from "../graph3d/nodeStyleResolver3D";
 import { renderNode3D } from "../graph3d/nodeRenderer3D";
 
 export default function Graph() {
-  const ref = useRef(null);
+  const fgRef = useRef(null);
 
   const graphData = graphDataStore((s) => s.graphData);
   const display = graphConfigStore((s) => s.display);
   const dimension = graphConfigStore((s) => s.display.dimension);
 
-  useGraphPhysics(ref);
+  const { onEngineTick } = useGraphPhysics(fgRef, dimension);
+
+  const ref = useCallback((instance) => {
+    fgRef.current = instance;
+  }, []);
 
   const commonProps = {
     ref,
     graphData,
+    d3AlphaDecay: 0.01,
+    d3VelocityDecay: 0.3,
+    onEngineTick: onEngineTick,
   };
 
   return dimension === "2d" ? (

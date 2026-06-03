@@ -84,7 +84,7 @@ export const graphPanel = [
         label: "Repel Force",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: -500, max: 0, step: 10 },
+        props: { size: "xs", min: 0, max: 20, step: 0.1 },
       },
       {
         id: "gravity",
@@ -92,7 +92,7 @@ export const graphPanel = [
         label: "Center Force",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 0, max: 1, step: 0.01 },
+        props: { size: "xs", min: 0, max: 10, step: 0.1 },
       },
       {
         id: "distance",
@@ -100,7 +100,7 @@ export const graphPanel = [
         label: "Link Distance",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 10, max: 200, step: 5 },
+        props: { size: "xs", min: 10, max: 150, step: 5 },
       },
       {
         id: "linkStrength",
