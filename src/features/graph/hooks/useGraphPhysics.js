@@ -17,12 +17,7 @@ export function useGraphPhysics(instanceRef) {
       fg.d3Force("center")?.strength(gravity);
       fg.d3Force("link")?.distance(distance)?.strength(linkStrength);
 
-      const sim = fg.d3Simulation?.();
-      if (sim) {
-        sim.alphaTarget(0.2);
-        const t = setTimeout(() => sim.alphaTarget(0), 400);
-        return () => clearTimeout(t);
-      }
+      fg.d3ReheatSimulation?.();
     } catch (e) {
       console.warn("[useGraphPhysics]", e);
     }
