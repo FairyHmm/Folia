@@ -1,0 +1,71 @@
+{
+  "targetRoles": ["Web UI/UX Engineer", "Web Backend Engineer"],
+  "lines": [
+    "Self-taught developer with a strong focus on <<Web UI/UX Engineer>> work, particularly in {{Web Frontend}} development.",
+    "Within ((Core Web)), [[HTML]] and [[CSS]] are a genuine strength — pixel-perfect attention to detail evident throughout.",
+    "[[JavaScript]] fundamentals are solid, likely strengthened through hands-on project work rather than formal study.",
+    "Clearly passionate about [[React]] — multiple personal projects demonstrate confident, production-quality usage.",
+    "Has explored {{Design}} seriously. [[Figma]] usage goes beyond developer handoff into real UI/UX thinking.",
+    "[[Sketch]] appears occasionally but [[Figma]] is clearly the preferred tool.",
+    "Backend exposure is minimal. Some [[JavaScript]] server-side usage spotted but no dedicated {{Core Backend Systems}} work.",
+    "[[REST]] APIs have been consumed as a client but never designed or implemented."
+  ],
+  "skills": {
+    "HTML": {
+      "proficiency": "EXPERT",
+      "relevance": {
+        "Web UI/UX Engineer": "MODERATE"
+      }
+    },
+    "CSS": {
+      "proficiency": "EXPERT",
+      "relevance": {
+        "Web UI/UX Engineer": "HIGH"
+      }
+    },
+    "JavaScript": {
+      "proficiency": "EXPERIENCED",
+      "relevance": {
+        "Web UI/UX Engineer": "CRITICAL",
+        "Web Backend Engineer": "HIGH"
+      }
+    },
+    "React": {
+      "proficiency": "EXPERIENCED",
+      "relevance": {
+        "Web UI/UX Engineer": "CRITICAL"
+      }
+    },
+    "Figma": {
+      "proficiency": "EXPERIENCED",
+      "relevance": {
+        "Web UI/UX Engineer": "HIGH"
+      }
+    },
+    "Sketch": {
+      "proficiency": "BASIC",
+      "relevance": {
+        "Web UI/UX Engineer": "LOW"
+      }
+    },
+    "REST": {
+      "proficiency": "BASIC",
+      "relevance": {
+        "Web UI/UX Engineer": "MODERATE",
+        "Web Backend Engineer": "CRITICAL"
+      }
+    }
+  },
+  "artifacts": [
+    {
+      "url": "https://github.com/user/react-portfolio",
+      "skills": ["React", "JavaScript", "CSS"],
+      "type": "github"
+    },
+    {
+      "url": "https://figma.com/file/abc123",
+      "skills": ["Figma", "Sketch"],
+      "type": "design"
+    }
+  ]
+}

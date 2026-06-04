@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { parseRoles } from "../utils/graphParser";
 import { applyNodeStyles } from "../utils/styleApplicator";
-import rolesData from "../../../shared/data/dummyData.json";
+import rolesData from "../../../shared/data/roleSchema.json";
 
 const parsedData = parseRoles(rolesData);
 

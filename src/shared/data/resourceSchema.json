@@ -1,0 +1,155 @@
+{
+  "Core Web": [
+    {
+      "title": "freeCodeCamp — Responsive Web Design",
+      "url": "https://freecodecamp.org/learn/2022/responsive-web-design",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "The Odin Project — Foundations",
+      "url": "https://theodinproject.com/paths/foundations",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "web.dev — Learn CSS",
+      "url": "https://web.dev/learn/css",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "JavaScript": [
+    {
+      "title": "javascript.info",
+      "url": "https://javascript.info",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "Eloquent JavaScript",
+      "url": "https://eloquentjavascript.net",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "You Don't Know JS",
+      "url": "https://github.com/getify/You-Dont-Know-JS",
+      "minProficiency": "EXPERIENCED"
+    }
+  ],
+  "React": [
+    {
+      "title": "React docs — react.dev",
+      "url": "https://react.dev",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "Epic React by Kent C. Dodds",
+      "url": "https://epicreact.dev",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "Patterns.dev",
+      "url": "https://patterns.dev",
+      "minProficiency": "EXPERIENCED"
+    }
+  ],
+  "Web Frameworks": [
+    {
+      "title": "JavaScript framework comparison — Fireship",
+      "url": "https://youtube.com/watch?v=cuHDQhDhvPE",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "Vue": [
+    {
+      "title": "Vue docs — vuejs.org",
+      "url": "https://vuejs.org/guide/introduction",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "Angular": [
+    {
+      "title": "Angular docs — angular.dev",
+      "url": "https://angular.dev/overview",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "Design Tools": [
+    {
+      "title": "Figma — official tutorials",
+      "url": "https://help.figma.com/hc/en-us/sections/4405269443991",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "Figma": [
+    {
+      "title": "Figma for Developers — Scrimba",
+      "url": "https://scrimba.com/learn/figmafordevs",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "Auto Layout deep dive — Figma",
+      "url": "https://youtube.com/watch?v=TyaGpGDFczw",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "Design systems in Figma",
+      "url": "https://youtube.com/watch?v=EK-pHkc5EL4",
+      "minProficiency": "EXPERIENCED"
+    }
+  ],
+  "Core Backend Systems": [
+    {
+      "title": "Backend dev roadmap — roadmap.sh",
+      "url": "https://roadmap.sh/backend",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "API Architecture": [
+    {
+      "title": "REST API design — Microsoft docs",
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "GraphQL — official docs",
+      "url": "https://graphql.org/learn",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "APIs You Won't Hate",
+      "url": "https://apisyouwonthate.com",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "Databases & Storage": [
+    {
+      "title": "SQL vs NoSQL explained — Fireship",
+      "url": "https://youtube.com/watch?v=W2Z7fbCLSTw",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "PostgreSQL": [
+    {
+      "title": "PostgreSQL official tutorial",
+      "url": "https://postgresql.org/docs/current/tutorial.html",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "pgexercises.com",
+      "url": "https://pgexercises.com",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "MongoDB": [
+    {
+      "title": "MongoDB University",
+      "url": "https://learn.mongodb.com",
+      "minProficiency": "BASIC"
+    }
+  ],
+  "Redis": [
+    {
+      "title": "Redis University",
+      "url": "https://university.redis.com",
+      "minProficiency": "BASIC"
+    }
+  ]
+}
