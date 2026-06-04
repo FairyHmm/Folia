@@ -1,0 +1,74 @@
+.chat-messages {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  overflow: hidden;
+
+  .scroll-container {
+    height: 100%;
+  }
+
+  .stack-viewport {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+
+  .message-row {
+    display: flex;
+    width: 100%;
+    transform-style: preserve-3d;
+
+    &[data-role="user"] {
+      justify-content: flex-end;
+    }
+
+    &[data-role="assistant"] {
+      justify-content: flex-start;
+    }
+  }
+
+  .empty-state {
+    font-size: var(--mantine-font-size-xs);
+    color: var(--mantine-color-dimmed);
+    font-family: var(--mantine-font-family-monospace);
+    text-align: center;
+    padding-top: var(--mantine-spacing-xl);
+    opacity: 0.3;
+  }
+
+  .message {
+    --bg-opacity: 0;
+    --border-opacity: 0;
+
+    max-width: 82%;
+    padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
+    border-radius: var(--mantine-radius-md);
+
+    background-color: color-mix(in srgb, var(--bg-base-color) var(--bg-opacity), transparent);
+    border: 1px solid color-mix(in srgb, var(--border-base-color) var(--border-opacity), transparent);
+
+    will-change: transform, opacity;
+
+    &[data-role="user"] {
+      --bg-base-color: var(--mantine-color-blue-filled);
+      --border-base-color: var(--mantine-color-blue-filled);
+      --bg-opacity: 18%;
+      --border-opacity: 35%;
+      transform-origin: bottom right;
+    }
+
+    &[data-role="assistant"] {
+      --bg-base-color: var(--mantine-color-default-hover);
+      --bg-opacity: 40%;
+      transform-origin: bottom left;
+    }
+
+    .message-text {
+      font-family: var(--mantine-font-family-monospace);
+      font-size: var(--mantine-font-size-xs);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+  }
+}

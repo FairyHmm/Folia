@@ -1,0 +1,23 @@
+.container {
+  --border-color: oklch(from var(--mantine-color-default-border) l c h / 0.4);
+  --border-styles: 1px solid var(--border-color);
+
+  width: clamp(300px, 92vw, 680px);
+  height: clamp(420px, 70vh, 600px);
+  display: flex;
+  flex-direction: row;
+  border-radius: var(--mantine-radius-lg);
+  border: var(--border-styles);
+  background-color: oklch(from var(--mantine-color-body) l c h / 0.75);
+  overflow: hidden;
+
+  @media (max-width: 540px) {
+    flex-direction: column;
+    width: clamp(280px, 96vw, 400px);
+    height: clamp(500px, 85vh, 680px);
+  }
+}
+
+.divider {
+  border-color: var(--border-color);
+}

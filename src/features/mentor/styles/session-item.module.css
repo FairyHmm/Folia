@@ -1,0 +1,46 @@
+.session-row {
+  --bg-color: oklch(from var(--mantine-color-default-border) l c h);
+  --bg-opacity: 0;
+
+  display: flex;
+  align-items: center;
+  padding: 4px 6px;
+  border-radius: var(--mantine-radius-sm);
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+  background-color: oklch(from var(--bg-color) l c h / var(--bg-opacity));
+
+  .session-label {
+    font-size: var(--mantine-font-size-xs);
+    font-family: var(--mantine-font-family-monospace);
+    line-height: 1.4;
+  }
+
+  .delete-btn {
+    opacity: 0;
+    transition: opacity 0.12s ease;
+    color: var(--mantine-color-dimmed);
+    flex-shrink: 0;
+  }
+
+  .rename-input {
+    font-size: var(--mantine-font-size-xs);
+    font-family: var(--mantine-font-family-monospace);
+    padding: 2px 4px;
+    height: auto;
+    min-height: unset;
+    background: transparent;
+    border-color: oklch(from var(--mantine-color-blue-filled) l c h / 0.5);
+  }
+
+  &:hover {
+    --bg-opacity: 0.2;
+    .delete-btn {
+      opacity: 1;
+    }
+  }
+
+  &[data-active] {
+    --bg-opacity: 0.25;
+  }
+}
