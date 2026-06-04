@@ -1,34 +1,16 @@
 import { create } from "zustand";
-
-import { graphPanel } from "../../graph/utils/graphPanel";
-import { useGraphPanelTools } from "../../graph/hooks/useGraphPanelTools";
-import { useGraphToolValue } from "../../graph/hooks/useGraphToolValue";
-
-import Upload from "../../upload/components/Upload";
-import Mentor from "../../mentor/components/Mentor";
+import { graphMode } from "../../graph/utils/graphMode";
+import { uploadMode } from "../../upload/utils/uploadMode";
+import { analyseMode } from "../../analyse/utils/analyseMode";
+import { mentorMode } from "../../mentor/utils/mentorMode";
 
 export const layoutStore = create(() => ({
   activeMode: "graph",
-
   modes: {
-    graph: {
-      panel: graphPanel,
-      useTools: useGraphPanelTools,
-      useToolValue: useGraphToolValue,
-      Overlay: null,
-    },
-    upload: {
-      panel: [],
-      useTools: () => ({}),
-      useToolValue: () => undefined,
-      Overlay: Upload,
-    },
-    mentor: {
-      panel: [],
-      useTools: () => ({}),
-      useToolValue: () => undefined,
-      Overlay: Mentor,
-    },
+    graph: graphMode,
+    upload: uploadMode,
+    analyse: analyseMode,
+    mentor: mentorMode,
   },
 }));
 

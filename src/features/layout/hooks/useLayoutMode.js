@@ -1,24 +1,22 @@
 import { layoutStore } from "../store/layoutStore";
+import { useGraphPanelTools } from "../../graph/hooks/useGraphPanelTools";
+import { useGraphToolValue } from "../../graph/hooks/useGraphToolValue";
 
 export function useLayoutMode() {
   const activeMode = layoutStore((s) => s.activeMode);
   const modes = layoutStore((s) => s.modes);
-
   const currentMode = modes[activeMode];
 
-  const graphTools = modes.graph.useTools();
-  const uploadTools = modes.upload.useTools();
-  const mentorTools = modes.mentor.useTools();
+  const graphTools = useGraphPanelTools();
+  const graphToolValue = useGraphToolValue;
 
-  const tools =
-    activeMode === "graph" ? graphTools :
-    activeMode === "upload" ? uploadTools :
-    mentorTools;
+  const tools = activeMode === "graph" ? graphTools : {};
+  const useToolValue = activeMode === "graph" ? graphToolValue : () => undefined;
 
   return {
     mode: currentMode,
-    tools: tools,
-    useToolValue: currentMode.useToolValue,
+    tools,
+    useToolValue,
     Overlay: currentMode.Overlay,
   };
 }

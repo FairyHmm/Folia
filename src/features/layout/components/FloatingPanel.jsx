@@ -52,17 +52,20 @@ export default function FloatingPanel({ sections, tools, useToolValue }) {
 }
 
 function ModeSwitcher({ activeMode }) {
+  const modes = layoutStore((s) => s.modes);
+  const currentMode = modes[activeMode];
+
   return (
     <Group grow gap="xs">
-      {MODE_BUTTONS[activeMode].map(({ label, mode }) => (
+      {currentMode.transitions.map((key) => (
         <Button
-          key={mode}
+          key={key}
           variant="default"
           size="xs"
           radius="lg"
-          onClick={() => setMode(mode)}
+          onClick={() => setMode(key)}
         >
-          {label}
+          {modes[key].label}
         </Button>
       ))}
     </Group>
