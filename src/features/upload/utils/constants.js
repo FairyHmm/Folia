@@ -16,4 +16,20 @@ export const ACCEPTED_MIME = [
   "text/x-markdown",
 ];
 
+export const MIME_MAP = {
+  // Documents
+  [MIME_TYPES.pdf]: "pdf",
+  [MIME_TYPES.docx]: "docx",
+
+  // Richtext
+  "text/rtf": "text",
+  "text/richtext": "text",
+  "application/rtf": "text",
+
+  // Plain Text
+  "text/plain": "text",
+  "text/markdown": "text",
+  "text/x-markdown": "text",
+};
+
 export const MAX_SIZE = 20 * 1024 * 1024; // 20MB

@@ -1,6 +1,15 @@
-import { Text, CloseButton, Group, Button, Box, Card } from "@mantine/core";
+import {
+  Text,
+  CloseButton,
+  Group,
+  Button,
+  Box,
+  Card,
+  Loader,
+} from "@mantine/core";
 import { Dropzone } from "@mantine/dropzone";
 import { useUpload } from "../hooks/useUpload";
+import { useFileExtractor } from "../hooks/useFileExtractor";
 import { ACCEPTED_MIME, MAX_SIZE } from "../utils/constants";
 import DropSection from "./DropSection";
 import PasteSection from "./PasteSection";
@@ -21,6 +30,8 @@ export default function Upload({ onClose, onSubmit }) {
     pasteHeight,
     handleDrop,
   } = useUpload();
+
+  const { handleAnalyse, loading } = useFileExtractor(onSubmit);
 
   return (
     <Box className={classes.container}>
@@ -65,11 +76,12 @@ export default function Upload({ onClose, onSubmit }) {
       <Group justify="flex-end" px="md" py="sm" className={classes.footer}>
         <Button
           size="sm"
-          disabled={!canSubmit}
+          disabled={!canSubmit || loading}
+          leftSection={loading && <Loader size={14} color="currentColor" />}
           className={classes["submit-button"]}
-          onClick={() => canSubmit && onSubmit?.({ file, text })}
+          onClick={() => handleAnalyse({ file, text, canSubmit })}
         >
-          Analyse
+          {loading ? "Extracting..." : "Analyse"}
         </Button>
       </Group>
     </Box>
