@@ -112,22 +112,4 @@ export const graphPanel = [
       },
     ],
   },
-  {
-    id: "interaction",
-    label: "Interaction",
-    defaultOpen: false,
-    tools: [
-      {
-        id: "reroll",
-        label: "Reroll Styles",
-        component: Button,
-        layout: "row",
-        props: {
-          size: "xs",
-          variant: "default",
-          children: "Reroll",
-        },
-      },
-    ],
-  },
 ];

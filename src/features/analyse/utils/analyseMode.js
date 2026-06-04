@@ -1,7 +1,10 @@
+import { graphPanel } from "../../graph/utils/graphPanel";
+
 export const analyseMode = {
   label: "Analyse",
-  panel: [],
+  view: "graph",
+  panel: graphPanel,
   Overlay: null,
-  transitions: [],
-  hidden: true,
+  transitions: ["upload", "mentor"],
+  disableTransitions: true,
 };

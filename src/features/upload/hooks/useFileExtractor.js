@@ -1,7 +1,7 @@
 import { useState } from "react";
 import extractTextFromFile from "../utils/fileExtractor";
 
-export function useFileExtractor(onSubmit) {
+export function useFileExtractor() {
   const [loading, setLoading] = useState(false);
 
   const handleAnalyse = async ({ file, text = "", canSubmit }) => {
@@ -21,9 +21,9 @@ export function useFileExtractor(onSubmit) {
       console.log(cleanText || "");
       console.log("================= Extracted Text End =================");
 
-      await onSubmit?.({ text: cleanText });
+      return { text: cleanText };
     } catch (error) {
-      console.error("Submission layout failure:", error);
+      console.error("Extraction failed:", error);
     } finally {
       setLoading(false);
     }

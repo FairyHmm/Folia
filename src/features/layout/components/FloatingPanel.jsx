@@ -2,15 +2,6 @@ import React from "react";
 import { Accordion, Stack, Group, Text, Button } from "@mantine/core";
 import { layoutStore, setMode } from "../store/layoutStore";
 
-const MODE_BUTTONS = {
-  graph: [
-    { label: "Upload", mode: "upload" },
-    { label: "Mentor", mode: "mentor" },
-  ],
-  upload: [{ label: "Graph", mode: "graph" }],
-  mentor: [{ label: "Graph", mode: "graph" }],
-};
-
 export default function FloatingPanel({ sections, tools, useToolValue }) {
   const activeMode = layoutStore((s) => s.activeMode);
 
@@ -63,6 +54,7 @@ function ModeSwitcher({ activeMode }) {
           variant="default"
           size="xs"
           radius="lg"
+          disabled={!!currentMode.disableTransitions}
           onClick={() => setMode(key)}
         >
           {modes[key].label}
@@ -96,13 +88,8 @@ const ToolRow = React.memo(function ToolRow({ tool, tools, useToolValue }) {
   const value = useToolValue(tool);
 
   const onChange = (v) => {
-    if (tool.group === "display") {
-      tools.updateDisplay(tool.id, v);
-    }
-
-    if (tool.group === "forces") {
-      tools.updateForces(tool.id, v);
-    }
+    if (tool.group === "display") tools.updateDisplay(tool.id, v);
+    if (tool.group === "forces") tools.updateForces(tool.id, v);
   };
 
   return (

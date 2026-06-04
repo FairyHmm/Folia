@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo } from "react";
 import { graphConfigStore } from "../store/graphConfigStore";
-import { graphDataStore } from "../store/graphDataStore";
+import { graphDataStore } from "../../../shared/store/graphDataStore";
 import { useGraphPhysics } from "../hooks/useGraphPhysics";
 import Graph2D from "../graph2d/Graph2D";
 import Graph3D from "../graph3d/Graph3D";

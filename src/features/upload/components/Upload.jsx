@@ -10,12 +10,13 @@ import {
 import { Dropzone } from "@mantine/dropzone";
 import { useUpload } from "../hooks/useUpload";
 import { useFileExtractor } from "../hooks/useFileExtractor";
+import { useCVAnalyser } from "../hooks/useCVAnalyser";
 import { ACCEPTED_MIME, MAX_SIZE } from "../utils/constants";
 import DropSection from "./DropSection";
 import PasteSection from "./PasteSection";
 import classes from "../styles/upload-panel.module.css";
 
-export default function Upload({ onClose, onSubmit }) {
+export default function Upload({ onClose }) {
   const {
     file,
     text,
@@ -31,7 +32,17 @@ export default function Upload({ onClose, onSubmit }) {
     handleDrop,
   } = useUpload();
 
-  const { handleAnalyse, loading } = useFileExtractor(onSubmit);
+  const { handleAnalyse: extractText, loading: extracting } =
+    useFileExtractor();
+  const { handleAnalyse, loading: analysing } = useCVAnalyser();
+
+  const loading = extracting || analysing;
+
+  const handleSubmit = async () => {
+    const { text: cleanText } =
+      (await extractText({ file, text, canSubmit })) ?? {};
+    await handleAnalyse({ text: cleanText, canSubmit });
+  };
 
   return (
     <Box className={classes.container}>
@@ -79,9 +90,9 @@ export default function Upload({ onClose, onSubmit }) {
           disabled={!canSubmit || loading}
           leftSection={loading && <Loader size={14} color="currentColor" />}
           className={classes["submit-button"]}
-          onClick={() => handleAnalyse({ file, text, canSubmit })}
+          onClick={handleSubmit}
         >
-          {loading ? "Extracting..." : "Analyse"}
+          {loading ? "Analysing..." : "Analyse"}
         </Button>
       </Group>
     </Box>
