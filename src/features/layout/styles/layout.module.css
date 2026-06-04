@@ -1,15 +1,28 @@
 .layout-root {
   width: 100vw;
   height: 100vh;
+  position: relative;
+  overflow: hidden;
   background: var(--mantine-color-body);
 }
 
 .layout-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   z-index: 10;
+
+  box-sizing: border-box;
+  padding: var(--mantine-spacing-md);
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
   backdrop-filter: brightness(0.8) blur(4px);
-  -webkit-backdrop-filter: brightness(0.4) blur(4px);
+  -webkit-backdrop-filter: brightness(0.8) blur(4px);
 }
 
 .layout-panel {

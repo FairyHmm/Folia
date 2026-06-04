@@ -1,0 +1,95 @@
+.container {
+  --border-styles: 1px solid
+    oklch(from var(--mantine-color-default-border) l c h / 0.4);
+
+  width: clamp(150px, 90vw, 400px);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--mantine-radius-lg);
+  border: var(--border-styles);
+
+  background-color: oklch(from var(--mantine-color-body) l c h / 0.75);
+
+  .header {
+    border-bottom: var(--border-styles);
+  }
+
+  .content {
+    padding: var(--mantine-spacing-md);
+
+    .inner-card {
+      overflow: hidden;
+      border: var(--border-styles);
+      background-color: oklch(
+        from var(--mantine-color-default-hover) l c h / 0.4
+      );
+    }
+  }
+
+  .drop-zone {
+    --color: var(--mantine-color-text);
+    --bg-color: none;
+    height: 100%;
+    color: var(--color);
+    background-color: oklch(from var(--bg-color) l c h / 0.15);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+
+    &.is-dragging {
+      --color: var(--mantine-color-blue-3);
+      --bg-color: var(--mantine-color-blue-filled);
+    }
+
+    &.is-hovering {
+      --color: var(--mantine-color-teal-3);
+      --bg-color: var(--mantine-color-teal-filled);
+    }
+  }
+
+  .file-icon {
+    flex-shrink: 0;
+    color: var(--mantine-color-blue-filled);
+  }
+
+  .paste-section-wrapper {
+    overflow: hidden;
+    border-top: var(--border-styles);
+  }
+
+  .textarea-input {
+    border-radius: 0 !important;
+    border: none !important;
+    resize: none !important;
+    background: transparent !important;
+    padding: var(--mantine-spacing-md) !important;
+    color: var(--mantine-color-text);
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  :global(.mantine-Dropzone-root) {
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+
+    &[data-loading] {
+      border: none !important;
+    }
+  }
+
+  .footer {
+    border-top: var(--border-styles);
+
+    .submit-button {
+      transition: all 0.1s ease-in-out;
+
+      &:not([disabled]):active {
+        transform: scale(0.98);
+      }
+    }
+  }
+}
