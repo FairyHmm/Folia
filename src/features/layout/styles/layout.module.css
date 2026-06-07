@@ -21,8 +21,8 @@
   align-items: center !important;
   justify-content: center !important;
 
-  backdrop-filter: brightness(0.8) blur(4px);
-  -webkit-backdrop-filter: brightness(0.8) blur(4px);
+  /*backdrop-filter: brightness(0.8) blur(4px);
+  -webkit-backdrop-filter: brightness(0.8) blur(4px);*/
 }
 
 .layout-panel {
