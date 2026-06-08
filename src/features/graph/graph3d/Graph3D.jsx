@@ -8,25 +8,23 @@ const Graph3D = memo(function Graph3DWrapper({
   graphRef,
   commonProps,
   onEngineTick,
+  onNodeClick,
 }) {
   const fgInternalRef = useRef(null);
   const displayRef = useRef(graphConfigStore.getState().display);
 
-  // Stable forever
   const nodeThreeObject = useCallback((node) => {
     const style = resolveNode3D(node, displayRef.current);
     return renderNode3D(style);
   }, []);
 
   useEffect(() => {
-    // Subscribe directly to store — completely bypasses React rendering
     const unsub = graphConfigStore.subscribe((state) => {
       displayRef.current = state.display;
 
       const nodes = commonProps.graphData?.nodes;
       if (!nodes) return;
 
-      // Mutate all cached Three.js objects in place
       for (const node of nodes) {
         const style = resolveNode3D(node, displayRef.current);
         renderNode3D(style);
@@ -53,6 +51,7 @@ const Graph3D = memo(function Graph3DWrapper({
       backgroundColor="#0000"
       nodeThreeObject={nodeThreeObject}
       nodeThreeObjectExtend={false}
+      onNodeClick={onNodeClick}
     />
   );
 });

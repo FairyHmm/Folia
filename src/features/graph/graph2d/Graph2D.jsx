@@ -9,6 +9,7 @@ const Graph2D = memo(function Graph2DWrapper({
   commonProps,
   onEngineTick,
   onLinkColor,
+  onNodeClick,
 }) {
   const displayRef = useRef(graphConfigStore.getState().display);
 
@@ -31,6 +32,7 @@ const Graph2D = memo(function Graph2DWrapper({
       onEngineTick={onEngineTick}
       nodeCanvasObject={nodeCanvasObject}
       linkColor={onLinkColor}
+      onNodeClick={onNodeClick}
     />
   );
 });

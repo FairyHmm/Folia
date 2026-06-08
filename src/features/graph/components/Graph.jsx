@@ -2,6 +2,7 @@ import { useRef, useCallback, useMemo } from "react";
 import { graphConfigStore } from "../store/graphConfigStore";
 import { graphDataStore } from "../../../shared/store/graphDataStore";
 import { useGraphPhysics } from "../hooks/useGraphPhysics";
+import { useNodeClick } from "../hooks/useNodeClick";
 import Graph2D from "../graph2d/Graph2D";
 import Graph3D from "../graph3d/Graph3D";
 
@@ -12,6 +13,7 @@ export default function Graph() {
   const dimension = graphConfigStore((s) => s.display.dimension);
 
   const { onEngineTick } = useGraphPhysics(fgRef, dimension);
+  const onNodeClick = useNodeClick();
 
   const setGraphRef = useCallback((instance) => {
     fgRef.current = instance;
@@ -34,12 +36,14 @@ export default function Graph() {
       commonProps={commonProps}
       onEngineTick={onEngineTick}
       onLinkColor={handleLinkColor}
+      onNodeClick={onNodeClick}
     />
   ) : (
     <Graph3D
       graphRef={setGraphRef}
       commonProps={commonProps}
       onEngineTick={onEngineTick}
+      onNodeClick={onNodeClick}
     />
   );
 }

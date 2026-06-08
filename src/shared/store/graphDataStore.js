@@ -1,11 +1,30 @@
 import { create } from "zustand";
 
+const ACTION_PREFIX = "__action__";
+const CONTENT_PREFIX = "__content__";
+
+const getId = (v) => (typeof v === "object" && v !== null ? v.id : v);
+
+export const isActionNode   = (id) => typeof id === "string" && id.includes(ACTION_PREFIX);
+export const isContentNode  = (id) => typeof id === "string" && id.includes(CONTENT_PREFIX);
+export const isTransientNode = (id) => isActionNode(id) || isContentNode(id);
+
+const filterTransientLinks = (links) =>
+  links.filter((l) => !isTransientNode(getId(l.source)) && !isTransientNode(getId(l.target)));
+
+const filterContentLinks = (links) =>
+  links.filter((l) => !isContentNode(getId(l.source)) && !isContentNode(getId(l.target)));
+
 export const graphDataStore = create((set, get) => ({
   graphData: { nodes: [], links: [] },
-  pendingLinks: [], // links waiting for endpoints
+  pendingLinks: [],
+  expandedSkill: null,
+  expandedAction: null,
+
+  // ─── Core node management ─────────────────────────────────────────────────
 
   addNode: (node, links = []) => {
-    const { graphData, pendingLinks } = get(); // destructure graphData, not nodes directly
+    const { graphData, pendingLinks } = get();
     const { nodes, links: existingLinks } = graphData;
     if (nodes.some((n) => n.id === node.id)) return;
 
@@ -15,22 +34,19 @@ export const graphDataStore = create((set, get) => ({
     const normalised = [
       ...pendingLinks,
       ...links.map((l) => ({
-        source: typeof l.source === "object" ? l.source.id : l.source,
-        target: typeof l.target === "object" ? l.target.id : l.target,
+        source: getId(l.source),
+        target: getId(l.target),
       })),
     ];
 
-    const linkKey = (l) => `${l.source}→${l.target}`;
+    const linkKey = (l) => `${getId(l.source)}→${getId(l.target)}`;
     const existingKeys = new Set(existingLinks.map(linkKey));
 
     const resolved = normalised.filter(
-      (l) =>
-        nodeIds.has(l.source) &&
-        nodeIds.has(l.target) &&
-        !existingKeys.has(linkKey(l)),
+      (l) => nodeIds.has(l.source) && nodeIds.has(l.target) && !existingKeys.has(linkKey(l))
     );
     const stillPending = normalised.filter(
-      (l) => !nodeIds.has(l.source) || !nodeIds.has(l.target),
+      (l) => !nodeIds.has(l.source) || !nodeIds.has(l.target)
     );
 
     set({
@@ -39,6 +55,75 @@ export const graphDataStore = create((set, get) => ({
     });
   },
 
+  updateNode: (id, patch) => {
+    const { graphData } = get();
+    const node = graphData.nodes.find((n) => n.id === id);
+    if (!node) return;
+    Object.assign(node, patch);
+    set({ graphData: { ...graphData } });
+  },
+
   clearGraph: () =>
-    set({ graphData: { nodes: [], links: [] }, pendingLinks: [] }),
+    set({ graphData: { nodes: [], links: [] }, pendingLinks: [], expandedSkill: null, expandedAction: null }),
+
+  // ─── Expansion helpers ────────────────────────────────────────────────────
+
+  expandSkill: (skillId, actionNodes, actionLinks) => {
+    const { graphData, expandedSkill } = get();
+    let { nodes, links } = graphData;
+
+    if (expandedSkill) {
+      nodes = nodes.filter((n) => !isTransientNode(n.id));
+      links = filterTransientLinks(links);
+    }
+
+    const newNodes = [...nodes, ...actionNodes];
+    const nodeIds = new Set(newNodes.map((n) => n.id));
+    const linkKey = (l) => `${getId(l.source)}→${getId(l.target)}`;
+    const existingKeys = new Set(links.map(linkKey));
+
+    const newLinks = [
+      ...links,
+      ...actionLinks.filter(
+        (l) => nodeIds.has(l.source) && nodeIds.has(l.target) && !existingKeys.has(linkKey(l))
+      ),
+    ];
+
+    set({ graphData: { nodes: newNodes, links: newLinks }, expandedSkill: skillId, expandedAction: null });
+  },
+
+  collapseSkill: () => {
+    const { graphData } = get();
+    set({
+      graphData: {
+        nodes: graphData.nodes.filter((n) => !isTransientNode(n.id)),
+        links: filterTransientLinks(graphData.links),
+      },
+      expandedSkill: null,
+      expandedAction: null,
+    });
+  },
+
+  expandAction: (actionId, contentNode, contentLink) => {
+    const { graphData, expandedAction } = get();
+    let { nodes, links } = graphData;
+
+    if (expandedAction) {
+      nodes = nodes.filter((n) => !isContentNode(n.id));
+      links = filterContentLinks(links);
+    }
+
+    const newNodes = [...nodes, contentNode];
+    const nodeIds = new Set(newNodes.map((n) => n.id));
+    const linkKey = (l) => `${getId(l.source)}→${getId(l.target)}`;
+    const existingKeys = new Set(links.map(linkKey));
+    const newLinks = [
+      ...links,
+      ...(nodeIds.has(contentLink.source) && nodeIds.has(contentLink.target) && !existingKeys.has(linkKey(contentLink))
+        ? [contentLink]
+        : []),
+    ];
+
+    set({ graphData: { nodes: newNodes, links: newLinks }, expandedAction: actionId });
+  },
 }));

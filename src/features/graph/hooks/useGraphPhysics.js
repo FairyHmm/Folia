@@ -22,7 +22,10 @@ export function useGraphPhysics(instanceRef, dimension) {
       const g = gravity / 100;
 
       fg.d3Force("charge")?.strength(-10 * (charge + 1));
-      fg.d3Force("link")?.distance(distance)?.strength(linkStrength);
+      // Per-link distance: use node's linkDistance if set, else fall back to config
+      fg.d3Force("link")
+        ?.distance((link) => link.linkDistance ?? distance)
+        ?.strength(linkStrength);
       fg.d3Force("gravity", null);
 
       if (dimension === "3d") {
