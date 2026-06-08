@@ -21,6 +21,20 @@ export const StructuralTier = {
   SKILL: { type: "skill", tier: 4 },
 };
 
+export const NodeType = {
+  STRUCTURAL: "structural",
+  ACTION: "action",
+};
+
+export const NodeShape = {
+  CIRCLE: "circle",
+
+  PILL: "pill",
+  CARD_ARTIFACT: "card-artifact",
+  CARD_RESOURCE: "card-resource",
+  NOTE: "note",
+};
+
 export const ActionType = {
   PROFICIENCY: "proficiency",
   RESOURCE: "resource",

@@ -1,24 +1,35 @@
+import {
+  Proficiency,
+  Relevance,
+  ActionType,
+  NodeShape,
+} from "../../../shared/utils/cvConstants";
+
 export const TIER_PRESETS = {
   1: {
     multiplier: 2,
+    glowMultiplier: 5,
     visibilityThreshold: 0.2,
     fontScale: 1.6,
     fontWeight: "600",
   },
   2: {
     multiplier: 1.5,
+    glowMultiplier: 3.5,
     visibilityThreshold: 0.5,
     fontScale: 1.2,
     fontWeight: "600",
   },
   3: {
     multiplier: 1,
+    glowMultiplier: 2.5,
     visibilityThreshold: 0.9,
     fontScale: 1.0,
     fontWeight: "400",
   },
   4: {
     multiplier: 0.7,
+    glowMultiplier: 1.5,
     visibilityThreshold: 1.6,
     fontScale: 0.85,
     fontWeight: "400",
@@ -34,13 +45,41 @@ export const CORE_TOKENS = {
   glowOpacity3D: 0.6,
 };
 
-export const COLORS = ["#d32f2f", "#388e3c", "#fbc02d"];
-export const SIZE_MULTIPLIERS = [0.5, 1, 1.5, 2, 2.5];
-export const GLOW_MULTIPLIERS = [2, 3, 4, 5, 6];
-export const RING_MULTIPLIERS = [1.2, 1.4, 1.6, 1.8];
+export const PROFICIENCY_COLOR = {
+  [Proficiency.UNKNOWN]: "#6b7280",
+  [Proficiency.INTERESTED]: "#f71212",
+  [Proficiency.BASIC]: "#ebd710",
+  [Proficiency.EXPERIENCED]: "#12fe69",
+  [Proficiency.EXPERT]: "#0cfef6",
+};
 
-export const SHAPES = {
-  circle: { labelPosition: "below", labelType: "sprite" },
-  square: { labelPosition: "below", labelType: "sprite" },
-  triangle: { labelPosition: "below", labelType: "sprite" },
+export const RELEVANCE_SIZE = {
+  [Relevance.NEGLIGIBLE]: 0.4,
+  [Relevance.LOW]: 0.7,
+  [Relevance.MODERATE]: 1.0,
+  [Relevance.HIGH]: 1.4,
+  [Relevance.CRITICAL]: 1.8,
+};
+
+export const DEFAULT_SIZE = 0.4;
+
+export const RING = {
+  multiplier: 1.4,
+  artifactColor: "#f7cb10",
+  defaultColor: null,
+};
+
+export const SHAPE_CONFIG = {
+  [NodeShape.CIRCLE]: { labelPosition: "below", labelType: "sprite" },
+  [NodeShape.PILL]: { labelPosition: "inside", labelType: "sprite" },
+  [NodeShape.CARD_ARTIFACT]: { labelPosition: "inside", labelType: "sprite" },
+  [NodeShape.CARD_RESOURCE]: { labelPosition: "inside", labelType: "sprite" },
+  [NodeShape.NOTE]: { labelPosition: "inside", labelType: "sprite" },
+};
+
+export const ACTION_SHAPE = {
+  [ActionType.PROFICIENCY]: NodeShape.PILL,
+  [ActionType.ARTIFACT]: NodeShape.CARD_ARTIFACT,
+  [ActionType.RESOURCE]: NodeShape.CARD_RESOURCE,
+  [ActionType.NOTE]: NodeShape.NOTE,
 };
