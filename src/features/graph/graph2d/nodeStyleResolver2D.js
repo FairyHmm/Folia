@@ -1,14 +1,14 @@
 import { TIER_PRESETS, CORE_TOKENS } from "../utils/graphStyleTokens";
+import { applyNodeStyles } from "../utils/styleApplicator";
 
 const styleCache = new Map();
 
 export function resolveNode2D(node, scale, display = {}) {
+  const styles = applyNodeStyles(node);
   const tier = TIER_PRESETS[node.tier] || TIER_PRESETS[4];
   const radius =
-    tier.multiplier * (node.sizeMultiplier || 1) * (display.nodeSize ?? 1);
-  const color = node.color || "#ffffff";
-  const ringColor = node.ringColor || color;
-  const labelPosition = node.labelPosition || "below";
+    tier.multiplier * styles.sizeMultiplier * (display.nodeSize ?? 1);
+  const labelPosition = styles.labelPosition || "below";
   const textYOffset =
     labelPosition === "inside"
       ? 0
@@ -21,17 +21,20 @@ export function resolveNode2D(node, scale, display = {}) {
   }
 
   s.radius = radius;
-  s.shape = node.shape || "circle";
-  s.color = color;
+  s.shape = styles.shape;
+  s.color = styles.color;
   s.label = node.label || "";
-  s.labelType = node.labelType || "sprite";
-  s.glowRadius = 1.5 * radius * (node.glowMultiplier || 1) * (display.glowSize ?? 1);
-  s.glowInner = color;
-  s.glowOpacity = display.glowOpacity ?? 0.6;
-  s.ringRadius =
-    radius * (node.ringMultiplier || 1.4) * (display.ringSize ?? 1);
-  s.ringColor = ringColor;
-  s.ringOpacity = display.ringOpacity ?? 0.5;
+  s.labelType = styles.labelType;
+  s.glowRadius = 1.5 * radius * tier.glowMultiplier * (display.glowSize ?? 1);
+  s.glowInner = styles.color;
+  s.glowOpacity = display.glowOpacity ?? CORE_TOKENS.glowOpacity3D;
+  s.ringRadius = styles.ringColor
+    ? radius * styles.ringMultiplier * (display.ringSize ?? 1)
+    : 0;
+  s.ringColor = styles.ringColor ?? styles.color;
+  s.ringOpacity = styles.ringColor
+    ? (display.ringOpacity ?? CORE_TOKENS.ringOpacity3D)
+    : 0;
   s.ringThickness = display.ringThickness ?? 1;
   s.font = `500 ${(8 / scale) * tier.multiplier}px ${CORE_TOKENS.fontFamily}`;
   s.textColor = CORE_TOKENS.textStyle;
