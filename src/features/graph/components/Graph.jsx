@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo } from "react";
+import { useRef, useCallback, useMemo, useEffect } from "react";
 import { graphConfigStore } from "../store/graphConfigStore";
 import { graphDataStore } from "../../../shared/store/graphDataStore";
 import { useGraphPhysics } from "../hooks/useGraphPhysics";
@@ -12,8 +12,15 @@ export default function Graph() {
   const graphData = graphDataStore((s) => s.graphData);
   const dimension = graphConfigStore((s) => s.display.dimension);
 
-  const { onEngineTick } = useGraphPhysics(fgRef, dimension);
-  const onNodeClick = useNodeClick();
+  const { onEngineTick, gentleReheat, resetReady } = useGraphPhysics(
+    fgRef,
+    dimension,
+  );
+  const onNodeClick = useNodeClick(gentleReheat, fgRef);
+
+  useEffect(() => {
+    resetReady();
+  }, [graphData, resetReady]);
 
   const setGraphRef = useCallback((instance) => {
     fgRef.current = instance;
@@ -22,7 +29,13 @@ export default function Graph() {
   const commonProps = useMemo(
     () => ({
       graphData,
-      d3AlphaDecay: 0.01,
+      // TRICK 1: Explicitly tell D3 to map nodes by string ID.
+      // This stops D3 from re-indexing the whole graph and flashing layout positions on updates.
+      linkId: "id",
+
+      // TRICK 2: Set a strict minimum alpha floor.
+      // This prevents the engine from violently thrashing when minor changes happen.
+      d3AlphaDecay: 0.03,
       d3VelocityDecay: 0.3,
     }),
     [graphData],

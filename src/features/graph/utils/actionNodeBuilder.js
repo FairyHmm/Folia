@@ -1,16 +1,15 @@
 import { ActionType, NodeType, Proficiency } from "../../../shared/utils/cvConstants";
 import { ACTION_SHAPE, PROFICIENCY_COLOR } from "./graphStyleTokens";
+import { graphConfigStore } from "../store/graphConfigStore";
 
-const ACTION_PREFIX = "__action__";
+const ACTION_PREFIX  = "__action__";
 const CONTENT_PREFIX = "__content__";
-const ACTION_LINK_DISTANCE = 30;
-const CONTENT_LINK_DISTANCE = 20;
 
-function actionNodeId(skillId, actionType) {
+export function actionNodeId(skillId, actionType) {
   return `${skillId}${ACTION_PREFIX}${actionType}`;
 }
 
-function contentNodeId(actionId) {
+export function contentNodeId(actionId) {
   return `${actionId}${CONTENT_PREFIX}`;
 }
 
@@ -32,11 +31,15 @@ function normalizeProficiency(value) {
 }
 
 export function buildActionNodes(skillNode) {
+  const distance = graphConfigStore.getState().forces.distance;
+  const linkDistance = distance * 0.22;
+  const actionTypes = Object.values(ActionType);
   const nodes = [];
   const links = [];
 
-  for (const actionType of Object.values(ActionType)) {
+  actionTypes.forEach((actionType) => {
     const id = actionNodeId(skillNode.id, actionType);
+
     nodes.push({
       id,
       label:    ACTION_LABELS[actionType],
@@ -44,24 +47,31 @@ export function buildActionNodes(skillNode) {
       actionType,
       shape:    ACTION_SHAPE[actionType],
       parentId: skillNode.id,
-      x: skillNode.x ?? 0,
-      y: skillNode.y ?? 0,
+      x:  skillNode.x ?? 0,
+      y:  skillNode.y ?? 0,
+      z:  skillNode.z ?? 0,
       vx: 0,
       vy: 0,
+      spawning:  true,
+      spawnAge:  0,
     });
+
     links.push({
       source:       skillNode.id,
       target:       id,
-      linkDistance: ACTION_LINK_DISTANCE,
+      linkDistance,
+      linkStrength: 1.0,
       color:        "#ffffff22",
     });
-  }
+  });
 
   return { nodes, links };
 }
 
 export function buildContentNode(actionNode, skillNode) {
   const id = contentNodeId(actionNode.id);
+  const distance = graphConfigStore.getState().forces.distance;
+  const linkDistance = distance * 0.22;
 
   const currentProficiency = normalizeProficiency(skillNode.proficiency);
   const nextProficiency = (currentProficiency + 1) % (Proficiency.EXPERT + 1);
@@ -69,14 +79,17 @@ export function buildContentNode(actionNode, skillNode) {
   const node = {
     id,
     label:      "",
-    nodeType:   NodeType.ACTION,
+    nodeType:   NodeType.CONTENT,
     actionType: actionNode.actionType,
     shape:      actionNode.shape,
     parentId:   actionNode.id,
     x:  actionNode.x ?? 0,
     y:  actionNode.y ?? 0,
+    z:  actionNode.z ?? 0,
     vx: 0,
     vy: 0,
+    spawning:  true,
+    spawnAge:  0,
     ...(actionNode.actionType === ActionType.PROFICIENCY && {
       color:           PROFICIENCY_COLOR[nextProficiency],
       nextProficiency,
@@ -86,7 +99,8 @@ export function buildContentNode(actionNode, skillNode) {
   const link = {
     source:       actionNode.id,
     target:       id,
-    linkDistance: CONTENT_LINK_DISTANCE,
+    linkDistance,
+    linkStrength: 1.0,
     color:        "#ffffff11",
   };
 

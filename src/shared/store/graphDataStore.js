@@ -3,17 +3,25 @@ import { create } from "zustand";
 const ACTION_PREFIX = "__action__";
 const CONTENT_PREFIX = "__content__";
 
+// Safe reference unwrapper for D3 objects
 const getId = (v) => (typeof v === "object" && v !== null ? v.id : v);
 
-export const isActionNode   = (id) => typeof id === "string" && id.includes(ACTION_PREFIX);
-export const isContentNode  = (id) => typeof id === "string" && id.includes(CONTENT_PREFIX);
+export const isActionNode = (id) =>
+  typeof id === "string" && id.includes(ACTION_PREFIX);
+export const isContentNode = (id) =>
+  typeof id === "string" && id.includes(CONTENT_PREFIX);
 export const isTransientNode = (id) => isActionNode(id) || isContentNode(id);
 
 const filterTransientLinks = (links) =>
-  links.filter((l) => !isTransientNode(getId(l.source)) && !isTransientNode(getId(l.target)));
+  links.filter(
+    (l) =>
+      !isTransientNode(getId(l.source)) && !isTransientNode(getId(l.target)),
+  );
 
 const filterContentLinks = (links) =>
-  links.filter((l) => !isContentNode(getId(l.source)) && !isContentNode(getId(l.target)));
+  links.filter(
+    (l) => !isContentNode(getId(l.source)) && !isContentNode(getId(l.target)),
+  );
 
 export const graphDataStore = create((set, get) => ({
   graphData: { nodes: [], links: [] },
@@ -43,10 +51,13 @@ export const graphDataStore = create((set, get) => ({
     const existingKeys = new Set(existingLinks.map(linkKey));
 
     const resolved = normalised.filter(
-      (l) => nodeIds.has(l.source) && nodeIds.has(l.target) && !existingKeys.has(linkKey(l))
+      (l) =>
+        nodeIds.has(l.source) &&
+        nodeIds.has(l.target) &&
+        !existingKeys.has(linkKey(l)),
     );
     const stillPending = normalised.filter(
-      (l) => !nodeIds.has(l.source) || !nodeIds.has(l.target)
+      (l) => !nodeIds.has(l.source) || !nodeIds.has(l.target),
     );
 
     set({
@@ -56,15 +67,19 @@ export const graphDataStore = create((set, get) => ({
   },
 
   updateNode: (id, patch) => {
-    const { graphData } = get();
-    const node = graphData.nodes.find((n) => n.id === id);
+    const node = get().graphData.nodes.find((n) => n.id === id);
     if (!node) return;
     Object.assign(node, patch);
-    set({ graphData: { ...graphData } });
+    // no set() — visual-only update, renderer reads node directly each tick
   },
 
   clearGraph: () =>
-    set({ graphData: { nodes: [], links: [] }, pendingLinks: [], expandedSkill: null, expandedAction: null }),
+    set({
+      graphData: { nodes: [], links: [] },
+      pendingLinks: [],
+      expandedSkill: null,
+      expandedAction: null,
+    }),
 
   // ─── Expansion helpers ────────────────────────────────────────────────────
 
@@ -72,6 +87,7 @@ export const graphDataStore = create((set, get) => ({
     const { graphData, expandedSkill } = get();
     let { nodes, links } = graphData;
 
+    // Clear previous menu items cleanly if another node was open
     if (expandedSkill) {
       nodes = nodes.filter((n) => !isTransientNode(n.id));
       links = filterTransientLinks(links);
@@ -82,14 +98,28 @@ export const graphDataStore = create((set, get) => ({
     const linkKey = (l) => `${getId(l.source)}→${getId(l.target)}`;
     const existingKeys = new Set(links.map(linkKey));
 
+    // Normalize incoming targets to safe IDs to prevent object-to-string reference flashes
+    const processedActionLinks = actionLinks.map((l) => ({
+      ...l,
+      source: getId(l.source),
+      target: getId(l.target),
+    }));
+
     const newLinks = [
       ...links,
-      ...actionLinks.filter(
-        (l) => nodeIds.has(l.source) && nodeIds.has(l.target) && !existingKeys.has(linkKey(l))
+      ...processedActionLinks.filter(
+        (l) =>
+          nodeIds.has(l.source) &&
+          nodeIds.has(l.target) &&
+          !existingKeys.has(linkKey(l)),
       ),
     ];
 
-    set({ graphData: { nodes: newNodes, links: newLinks }, expandedSkill: skillId, expandedAction: null });
+    set({
+      graphData: { nodes: newNodes, links: newLinks },
+      expandedSkill: skillId,
+      expandedAction: null,
+    });
   },
 
   collapseSkill: () => {
@@ -117,13 +147,26 @@ export const graphDataStore = create((set, get) => ({
     const nodeIds = new Set(newNodes.map((n) => n.id));
     const linkKey = (l) => `${getId(l.source)}→${getId(l.target)}`;
     const existingKeys = new Set(links.map(linkKey));
+
+    // Normalize the single incoming nested sub-link references explicitly
+    const normalizedContentLink = {
+      ...contentLink,
+      source: getId(contentLink.source),
+      target: getId(contentLink.target),
+    };
+
     const newLinks = [
       ...links,
-      ...(nodeIds.has(contentLink.source) && nodeIds.has(contentLink.target) && !existingKeys.has(linkKey(contentLink))
-        ? [contentLink]
+      ...(nodeIds.has(normalizedContentLink.source) &&
+      nodeIds.has(normalizedContentLink.target) &&
+      !existingKeys.has(linkKey(normalizedContentLink))
+        ? [normalizedContentLink]
         : []),
     ];
 
-    set({ graphData: { nodes: newNodes, links: newLinks }, expandedAction: actionId });
+    set({
+      graphData: { nodes: newNodes, links: newLinks },
+      expandedAction: actionId,
+    });
   },
 }));
