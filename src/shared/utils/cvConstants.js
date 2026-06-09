@@ -24,6 +24,8 @@ export const StructuralTier = {
 export const NodeType = {
   STRUCTURAL: "structural",
   ACTION: "action",
+  CONTENT: "content",
+  ADD_BUTTON: "add_button",
 };
 
 export const NodeShape = {

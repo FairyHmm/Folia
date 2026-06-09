@@ -134,34 +134,39 @@ export const graphDataStore = create((set, get) => ({
     });
   },
 
-  expandAction: (actionId, contentNode, contentLink) => {
+  // ... inside create((set, get) => ({ ... })):
+
+  expandAction: (actionId, contentNodes, contentLinks) => {
     const { graphData, expandedAction } = get();
     let { nodes, links } = graphData;
 
+    // Clear previous content if switching actions
     if (expandedAction) {
       nodes = nodes.filter((n) => !isContentNode(n.id));
       links = filterContentLinks(links);
     }
 
-    const newNodes = [...nodes, contentNode];
+    const newNodes = [...nodes, ...contentNodes];
     const nodeIds = new Set(newNodes.map((n) => n.id));
+
+    // Normalize links
+    const processedContentLinks = contentLinks.map((l) => ({
+      ...l,
+      source: getId(l.source),
+      target: getId(l.target),
+    }));
+
     const linkKey = (l) => `${getId(l.source)}→${getId(l.target)}`;
     const existingKeys = new Set(links.map(linkKey));
 
-    // Normalize the single incoming nested sub-link references explicitly
-    const normalizedContentLink = {
-      ...contentLink,
-      source: getId(contentLink.source),
-      target: getId(contentLink.target),
-    };
-
     const newLinks = [
       ...links,
-      ...(nodeIds.has(normalizedContentLink.source) &&
-      nodeIds.has(normalizedContentLink.target) &&
-      !existingKeys.has(linkKey(normalizedContentLink))
-        ? [normalizedContentLink]
-        : []),
+      ...processedContentLinks.filter(
+        (l) =>
+          nodeIds.has(l.source) &&
+          nodeIds.has(l.target) &&
+          !existingKeys.has(linkKey(l)),
+      ),
     ];
 
     set({
