@@ -3,173 +3,165 @@ import {
   NodeType,
   Proficiency,
 } from "../../../shared/utils/cvConstants";
-import { ACTION_SHAPE, PROFICIENCY_COLOR } from "./graphStyleTokens";
+import {
+  ACTION_LABELS,
+  PROFICIENCY_LABELS,
+  normalizeProficiency,
+  getActionNodeShape,
+  getProficiencyNodeColor,
+  getArtifactNodeColor,
+  getResourceNodeColor,
+} from "./graphStyleTokens";
 import { graphConfigStore } from "../store/graphConfigStore";
+import { useReferenceStore } from "../../../shared/store/referenceStore";
+import { cvStore } from "../../../shared/store/cvStore";
 
 const ACTION_PREFIX = "__action__";
 const CONTENT_PREFIX = "__content__";
 
-export function actionNodeId(skillId, actionType) {
-  return `${skillId}${ACTION_PREFIX}${actionType}`;
-}
-
-export function contentNodeId(actionId) {
-  return `${actionId}${CONTENT_PREFIX}`;
-}
-
-const ACTION_LABELS = {
-  [ActionType.PROFICIENCY]: "proficiency",
-  [ActionType.RESOURCE]: "resources",
-  [ActionType.NOTE]: "notes",
-  [ActionType.ARTIFACT]: "artifacts",
-};
-
-const PROFICIENCY_LABELS = {
-  [Proficiency.UNKNOWN]: "Unknown",
-  [Proficiency.INTERESTED]: "Interested",
-  [Proficiency.BASIC]: "Basic",
-  [Proficiency.EXPERIENCED]: "Experienced",
-  [Proficiency.EXPERT]: "Expert",
-};
-
-const PROFICIENCY_KEY = Object.fromEntries(
-  Object.entries(Proficiency).map(([k, v]) => [k, v]),
-);
-
-function normalizeProficiency(value) {
-  if (value == null) return Proficiency.UNKNOWN;
-  if (typeof value === "number") return value;
-  return PROFICIENCY_KEY[value] ?? Proficiency.UNKNOWN;
-}
-
-export function buildContentNodes(actionNode, skillNode) {
+function createNodeAndLink(parent, idSuffix, props = {}) {
   const distance = graphConfigStore.getState().forces.distance;
   const linkDistance = distance * 0.22;
+
+  const node = {
+    id: `${parent.id}${idSuffix}`,
+    x: parent.x,
+    y: parent.y,
+    z: parent.z,
+    ...props,
+  };
+
+  const link = {
+    source: parent.id,
+    target: node.id,
+    linkDistance,
+    linkStrength: 1.0,
+    color: props.linkColor || "#ffffff11",
+  };
+
+  return { node, link };
+}
+
+const CONTENT_CONFIG = {
+  [ActionType.RESOURCE]: {
+    fetch: (skill) =>
+      useReferenceStore.getState().getResourcesForSkill(skill.label),
+    getProps: (res) => ({
+      label: res.title,
+      url: res.url,
+      color: getResourceNodeColor(),
+    }),
+  },
+  [ActionType.ARTIFACT]: {
+    fetch: (skill) => {
+      const data = cvStore.getState().cvData;
+      return (data?.artifacts || []).filter((a) =>
+        a.skills?.includes(skill.label),
+      );
+    },
+    getProps: (art) => ({
+      label: art.type,
+      url: art.url,
+      color: getArtifactNodeColor(),
+    }),
+  },
+  [ActionType.NOTE]: {
+    fetch: () => [{ label: "Notes empty" }],
+    getProps: () => ({ label: "Notes empty", color: "#a78bfa" }),
+  },
+};
+
+export function buildContentNodes(actionNode, skillNode) {
   const nodes = [];
   const links = [];
 
-  // 1. PROFICIENCY: Spawn 5 nodes (one for each level)
   if (actionNode.actionType === ActionType.PROFICIENCY) {
-    const levels = [
-      Proficiency.UNKNOWN,
-      Proficiency.INTERESTED,
-      Proficiency.BASIC,
-      Proficiency.EXPERIENCED,
-      Proficiency.EXPERT,
-    ];
+    const currentLevel = normalizeProficiency(skillNode.proficiency);
+    Object.values(Proficiency).forEach((level) => {
+      const { node, link } = createNodeAndLink(
+        actionNode,
+        `${CONTENT_PREFIX}${level}`,
+        {
+          label: PROFICIENCY_LABELS[level],
+          nodeType: NodeType.CONTENT,
+          actionType: ActionType.PROFICIENCY,
+          shape: "circle",
+          level,
+          color: getProficiencyNodeColor(level, currentLevel),
+          linkColor: "#ffffff22",
+        },
+      );
+      nodes.push(node);
+      links.push(link);
+    });
+  } else {
+    const config = CONTENT_CONFIG[actionNode.actionType];
+    if (config) {
+      const items = config.fetch(skillNode);
+      const shape = getActionNodeShape(actionNode.actionType);
 
-    levels.forEach((level) => {
-      const id = `${actionNode.id}${CONTENT_PREFIX}${level}`;
-      const isCurrent = skillNode.proficiency === level;
-
-      nodes.push({
-        id,
-        label: PROFICIENCY_LABELS[level],
-        nodeType: NodeType.CONTENT,
-        actionType: ActionType.PROFICIENCY,
-        shape: "circle", // Commit 1: Force circle
-        parentId: actionNode.id,
-        x: actionNode.x,
-        y: actionNode.y,
-        z: actionNode.z,
-        level: level, // Used to update parent on click
-        spawning: true,
-        spawnAge: 0,
-        // Temporary visual cue: White if selected, Grey if not
-        color: isCurrent ? "#ffffff" : "#94a3b8",
+      items.forEach((item, index) => {
+        const { node, link } = createNodeAndLink(
+          actionNode,
+          `${CONTENT_PREFIX}${index}`,
+          {
+            nodeType: NodeType.CONTENT,
+            actionType: actionNode.actionType,
+            shape,
+            spawning: true,
+            spawnAge: 0,
+            ...config.getProps(item),
+          },
+        );
+        nodes.push(node);
+        links.push(link);
       });
 
-      links.push({
-        source: actionNode.id,
-        target: id,
-        linkDistance,
-        linkStrength: 1.0,
-        color: "#ffffff22",
-      });
-    });
-  }
-  // 2. OTHERS: Placeholder to prove interaction works
-  else {
-    const id = `${actionNode.id}${CONTENT_PREFIX}0`;
-
-    nodes.push({
-      id,
-      label: "No content yet",
-      nodeType: NodeType.CONTENT,
-      actionType: actionNode.actionType,
-      shape: "circle", // Commit 1: Force circle
-      parentId: actionNode.id,
-      x: actionNode.x,
-      y: actionNode.y,
-      z: actionNode.z,
-      spawning: true,
-      spawnAge: 0,
-      color: "#94a3b8",
-    });
-
-    links.push({
-      source: actionNode.id,
-      target: id,
-      linkDistance,
-      linkStrength: 1.0,
-      color: "#ffffff11",
-    });
+      // Add Button
+      const { node, link } = createNodeAndLink(
+        actionNode,
+        `${CONTENT_PREFIX}add`,
+        {
+          label: "+ Add",
+          nodeType: NodeType.ADD_BUTTON,
+          shape: "circle",
+          spawning: true,
+          spawnAge: 0,
+          color: "#ffffff",
+        },
+      );
+      nodes.push(node);
+      links.push(link);
+    }
   }
 
   return { nodes, links };
 }
 
 export function buildActionNodes(skillNode) {
-  const distance = graphConfigStore.getState().forces.distance;
-  const linkDistance = distance * 0.22;
-  const actionTypes = Object.values(ActionType);
   const nodes = [];
   const links = [];
 
-  actionTypes.forEach((actionType) => {
-    const id = actionNodeId(skillNode.id, actionType);
-
-    nodes.push({
-      id,
-      label: getActionLabel(actionType), // Ensure you have this helper or use a string map
-      nodeType: NodeType.ACTION,
-      actionType,
-      shape: "circle", // Commit 1: Force circle
-      parentId: skillNode.id,
-      x: skillNode.x ?? 0,
-      y: skillNode.y ?? 0,
-      z: skillNode.z ?? 0,
-      vx: 0,
-      vy: 0,
-      spawning: true,
-      spawnAge: 0,
-      color: "#94a3b8", // Default action color
-    });
-
-    links.push({
-      source: skillNode.id,
-      target: id,
-      linkDistance,
-      linkStrength: 1.0,
-      color: "#ffffff22",
-    });
+  Object.values(ActionType).forEach((actionType) => {
+    const { node, link } = createNodeAndLink(
+      skillNode,
+      `${ACTION_PREFIX}${actionType}`,
+      {
+        label: ACTION_LABELS[actionType],
+        nodeType: NodeType.ACTION,
+        actionType,
+        shape: getActionNodeShape(actionType),
+        vx: 0,
+        vy: 0,
+        spawning: true,
+        spawnAge: 0,
+        color: "#94a3b8",
+        linkColor: "#ffffff22",
+      },
+    );
+    nodes.push(node);
+    links.push(link);
   });
 
   return { nodes, links };
-}
-
-// Helper if you don't have it
-function getActionLabel(type) {
-  switch (type) {
-    case ActionType.PROFICIENCY:
-      return "Proficiency";
-    case ActionType.RESOURCE:
-      return "Resources";
-    case ActionType.NOTE:
-      return "Notes";
-    case ActionType.ARTIFACT:
-      return "Artifacts";
-    default:
-      return "Action";
-  }
 }

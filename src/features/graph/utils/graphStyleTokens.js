@@ -83,3 +83,43 @@ export const ACTION_SHAPE = {
   [ActionType.RESOURCE]: NodeShape.CARD_RESOURCE,
   [ActionType.NOTE]: NodeShape.NOTE,
 };
+
+export const ACTION_LABELS = {
+  [ActionType.PROFICIENCY]: "Proficiency",
+  [ActionType.RESOURCE]: "Resources",
+  [ActionType.NOTE]: "Notes",
+  [ActionType.ARTIFACT]: "Artifacts",
+};
+
+export const PROFICIENCY_LABELS = {
+  [Proficiency.UNKNOWN]: "Unknown",
+  [Proficiency.INTERESTED]: "Interested",
+  [Proficiency.BASIC]: "Basic",
+  [Proficiency.EXPERIENCED]: "Experienced",
+  [Proficiency.EXPERT]: "Expert",
+};
+
+export function normalizeProficiency(value) {
+  if (value == null) return Proficiency.UNKNOWN;
+  if (typeof value === "number") return value;
+  return Object.values(Proficiency).includes(value)
+    ? Proficiency[value]
+    : Proficiency.UNKNOWN;
+}
+
+export function getProficiencyNodeColor(level, currentLevel) {
+  if (level === currentLevel) return "#ffffff";
+  return PROFICIENCY_COLOR[level] || PROFICIENCY_COLOR[Proficiency.UNKNOWN];
+}
+
+export function getActionNodeShape(actionType) {
+  return ACTION_SHAPE[actionType] || NodeShape.CIRCLE;
+}
+
+export function getArtifactNodeColor() {
+  return RING.artifactColor || "#facc15";
+}
+
+export function getResourceNodeColor() {
+  return "#38bdf8";
+}

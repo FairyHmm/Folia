@@ -24,11 +24,22 @@ export function useNodeClick(gentleReheat) {
 
       // ─── Content node click ───────────────────────────────────────────────
       if (isContentNode(node.id)) {
-        // Proficiency Logic: Update parent skill
+        // 1. Proficiency Logic
         if (node.actionType === ActionType.PROFICIENCY && node.level != null) {
           const skillId = node.parentId.split("__action__")[0];
           updateNode(skillId, { proficiency: node.level });
         }
+        // 2. Resource/Artifact Link Logic
+        else if (node.url) {
+          window.open(node.url, "_blank");
+        }
+        return;
+      }
+
+      // Check for Add Button (which is technically a content node structure but distinct type)
+      if (node.nodeType === NodeType.ADD_BUTTON) {
+        console.log("Open Add Modal for:", node.parentId);
+        // Future: dispatch openModal(ActionType, parentId)
         return;
       }
 
