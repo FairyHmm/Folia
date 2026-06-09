@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo, useEffect } from "react";
 import { graphConfigStore } from "../store/graphConfigStore";
-import { graphDataStore } from "../../../shared/store/graphDataStore";
+import { useCompiledGraph } from "../hooks/useCompiledGraph";
 import { useGraphPhysics } from "../hooks/useGraphPhysics";
 import { useNodeClick } from "../hooks/useNodeClick";
 import Graph2D from "../graph2d/Graph2D";
@@ -8,15 +8,16 @@ import Graph3D from "../graph3d/Graph3D";
 
 export default function Graph() {
   const fgRef = useRef(null);
-
-  const graphData = graphDataStore((s) => s.graphData);
   const dimension = graphConfigStore((s) => s.display.dimension);
+
+  // 💥 Clean execution entry point
+  const { graphData, toggleSkill, toggleAction } = useCompiledGraph();
 
   const { onEngineTick, gentleReheat, resetReady } = useGraphPhysics(
     fgRef,
     dimension,
   );
-  const onNodeClick = useNodeClick(gentleReheat, fgRef);
+  const onNodeClick = useNodeClick(gentleReheat, toggleSkill, toggleAction);
 
   useEffect(() => {
     resetReady();
@@ -29,12 +30,7 @@ export default function Graph() {
   const commonProps = useMemo(
     () => ({
       graphData,
-      // TRICK 1: Explicitly tell D3 to map nodes by string ID.
-      // This stops D3 from re-indexing the whole graph and flashing layout positions on updates.
       linkId: "id",
-
-      // TRICK 2: Set a strict minimum alpha floor.
-      // This prevents the engine from violently thrashing when minor changes happen.
       d3AlphaDecay: 0.03,
       d3VelocityDecay: 0.3,
     }),

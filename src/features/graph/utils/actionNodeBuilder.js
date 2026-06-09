@@ -15,9 +15,7 @@ import {
 import { graphConfigStore } from "../store/graphConfigStore";
 import { useReferenceStore } from "../../../shared/store/referenceStore";
 import { cvStore } from "../../../shared/store/cvStore";
-
-const ACTION_PREFIX = "__action__";
-const CONTENT_PREFIX = "__content__";
+import { ACTION_PREFIX, CONTENT_PREFIX } from "./graphUtils";
 
 function createNodeAndLink(parent, idSuffix, props = {}) {
   const distance = graphConfigStore.getState().forces.distance;
@@ -25,6 +23,7 @@ function createNodeAndLink(parent, idSuffix, props = {}) {
 
   const node = {
     id: `${parent.id}${idSuffix}`,
+    parentId: parent.id,
     x: parent.x,
     y: parent.y,
     z: parent.z,
@@ -42,38 +41,10 @@ function createNodeAndLink(parent, idSuffix, props = {}) {
   return { node, link };
 }
 
-const CONTENT_CONFIG = {
-  [ActionType.RESOURCE]: {
-    fetch: (skill) =>
-      useReferenceStore.getState().getResourcesForSkill(skill.label),
-    getProps: (res) => ({
-      label: res.title,
-      url: res.url,
-      color: getResourceNodeColor(),
-    }),
-  },
-  [ActionType.ARTIFACT]: {
-    fetch: (skill) => {
-      const data = cvStore.getState().cvData;
-      return (data?.artifacts || []).filter((a) =>
-        a.skills?.includes(skill.label),
-      );
-    },
-    getProps: (art) => ({
-      label: art.type,
-      url: art.url,
-      color: getArtifactNodeColor(),
-    }),
-  },
-  [ActionType.NOTE]: {
-    fetch: () => [{ label: "Notes empty" }],
-    getProps: () => ({ label: "Notes empty", color: "#a78bfa" }),
-  },
-};
-
 export function buildContentNodes(actionNode, skillNode) {
   const nodes = [];
   const links = [];
+  const baseSpawn = { spawning: true, spawnAge: 0 };
 
   if (actionNode.actionType === ActionType.PROFICIENCY) {
     const currentLevel = normalizeProficiency(skillNode.proficiency);
@@ -108,8 +79,7 @@ export function buildContentNodes(actionNode, skillNode) {
             nodeType: NodeType.CONTENT,
             actionType: actionNode.actionType,
             shape,
-            spawning: true,
-            spawnAge: 0,
+            ...baseSpawn,
             ...config.getProps(item),
           },
         );
@@ -125,9 +95,8 @@ export function buildContentNodes(actionNode, skillNode) {
           label: "+ Add",
           nodeType: NodeType.ADD_BUTTON,
           shape: "circle",
-          spawning: true,
-          spawnAge: 0,
           color: "#ffffff",
+          ...baseSpawn,
         },
       );
       nodes.push(node);
@@ -165,3 +134,32 @@ export function buildActionNodes(skillNode) {
 
   return { nodes, links };
 }
+
+const CONTENT_CONFIG = {
+  [ActionType.RESOURCE]: {
+    fetch: (skill) =>
+      useReferenceStore.getState().getResourcesForSkill(skill.label),
+    getProps: (res) => ({
+      label: res.title,
+      url: res.url,
+      color: getResourceNodeColor(),
+    }),
+  },
+  [ActionType.ARTIFACT]: {
+    fetch: (skill) => {
+      const data = cvStore.getState().cvData;
+      return (data?.artifacts || []).filter((a) =>
+        a.skills?.includes(skill.label),
+      );
+    },
+    getProps: (art) => ({
+      label: art.type,
+      url: art.url,
+      color: getArtifactNodeColor(),
+    }),
+  },
+  [ActionType.NOTE]: {
+    fetch: () => [{ label: "Notes empty" }],
+    getProps: () => ({ label: "Notes empty", color: "#a78bfa" }),
+  },
+};
