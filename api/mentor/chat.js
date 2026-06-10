@@ -17,14 +17,14 @@ export default async function handler(req, res) {
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.1-flash-lite",
+      model: "gemini-2.5-flash-lite",
       contents: messages.map((m) => ({
         role: m.role === "assistant" ? "model" : "user",
         parts: [{ text: m.content }],
       })),
       config: {
         systemInstruction: `
-You are a career Mentor.
+You are a career mentor.
 
 You help students with:
 - learning strategies

@@ -20,7 +20,7 @@ export default function SessionSidebar({
         <ActionIcon
           variant="subtle"
           size="sm"
-          onClick={sidebarActions.newSession}
+          onClick={() => sidebarActions.startSession()}
           aria-label="New session"
         >
           <Plus size={14} />

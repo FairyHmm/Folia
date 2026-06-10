@@ -1,28 +1,38 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-const makeSession = (id) => ({
+const makeSession = (id, prefillMessage = null) => ({
   id,
   title: `Session ${id}`,
   createdAt: Date.now(),
   context: null,
-  messages: [],
+  messages: prefillMessage ? [prefillMessage] : [],
+});
+
+const defaultAssistantMessage = () => ({
+  id: crypto.randomUUID(),
+  role: "assistant",
+  content:
+    "Greetings. We are having an interview today. What is your name, and what is the position you are aiming for?",
+  ts: Date.now(),
 });
 
 export const mentorStore = create(
   persist(
     (set, get) => ({
-      sessions: [makeSession(1)],
+      sessions: [makeSession(1, defaultAssistantMessage())],
       activeSessionId: 1,
       nextId: 2,
 
-      newSession: () => {
+      newSession: (prefillMessage = null) => {
         const id = get().nextId;
+        const session = makeSession(id, prefillMessage);
         set((s) => ({
-          sessions: [...s.sessions, makeSession(id)],
+          sessions: [...s.sessions, session],
           activeSessionId: id,
           nextId: id + 1,
         }));
+        return id;
       },
 
       switchSession: (id) => set({ activeSessionId: id }),
@@ -30,18 +40,22 @@ export const mentorStore = create(
       deleteSession: (id) =>
         set((s) => {
           const remaining = s.sessions.filter((sess) => sess.id !== id);
+
           if (remaining.length === 0) {
             const newId = s.nextId;
+            const newSession = makeSession(newId, defaultAssistantMessage());
             return {
-              sessions: [makeSession(newId)],
+              sessions: [newSession],
               activeSessionId: newId,
               nextId: newId + 1,
             };
           }
+
           const nextActive =
             s.activeSessionId === id
               ? remaining[remaining.length - 1].id
               : s.activeSessionId;
+
           return { sessions: remaining, activeSessionId: nextActive };
         }),
 

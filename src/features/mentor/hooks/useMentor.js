@@ -3,7 +3,7 @@ import { mentorStore } from "../store/mentorStore";
 import { useTTS } from "./useTTS";
 import { useSTT } from "./useSTT";
 
-export function useMentor(context) {
+export function useMentor() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -25,9 +25,6 @@ export function useMentor(context) {
 
   const { speak, stop: stopTTS, speaking } = useTTS();
 
-  // ----------------------------
-  // TTS TOGGLE
-  // ----------------------------
   const toggleTTS = useCallback(() => {
     setTtsEnabled((prev) => {
       if (prev) stopTTS();
@@ -35,13 +32,13 @@ export function useMentor(context) {
     });
   }, [stopTTS]);
 
-  // ----------------------------
-  // CORE SEND
-  // ----------------------------
   const sendMessage = useCallback(
-    async (overrideText) => {
-      const text = typeof overrideText === "string" ? overrideText : input;
+    async (overrideText, overrideSessionId) => {
+      const text = overrideText ?? input;
       const trimmed = text.trim();
+      const sessionId = overrideSessionId ?? activeSessionId;
+      const session = sessions.find((s) => s.id === sessionId);
+
       if (!trimmed || isTyping) return;
 
       setInput("");
@@ -53,13 +50,14 @@ export function useMentor(context) {
         ts: Date.now(),
       };
 
-      addMessage(activeSessionId, userMessage);
+      addMessage(sessionId, userMessage);
       setIsTyping(true);
 
       try {
-        const history = [...(activeSession.messages ?? []), userMessage].map(
-          (m) => ({ role: m.role, content: m.content }),
-        );
+        const history = [...(session.messages ?? []), userMessage].map((m) => ({
+          role: m.role,
+          content: m.content,
+        }));
 
         const res = await fetch("/api/mentor/chat", {
           method: "POST",
@@ -71,22 +69,16 @@ export function useMentor(context) {
 
         const { reply } = await res.json();
 
-        // When TTS is on: kick off audio immediately, show text only when it starts playing
-        // When TTS is off: show text straight away
-        if (ttsEnabled && reply) {
-          await speak(reply);
-        }
+        if (ttsEnabled && reply) await speak(reply);
 
-        addMessage(activeSessionId, {
+        addMessage(sessionId, {
           id: crypto.randomUUID(),
           role: "assistant",
           content: reply,
           ts: Date.now(),
         });
-      } catch (err) {
-        console.error("Chat error:", err);
-
-        addMessage(activeSessionId, {
+      } catch {
+        addMessage(sessionId, {
           id: crypto.randomUUID(),
           role: "assistant",
           content: "Something went wrong. Please try again.",
@@ -96,16 +88,22 @@ export function useMentor(context) {
         setIsTyping(false);
       }
     },
-    [
-      input,
-      isTyping,
-      activeSessionId,
-      activeSession,
-      addMessage,
-      ttsEnabled,
-      speak,
-    ],
+    [input, isTyping, activeSessionId, sessions, addMessage, ttsEnabled, speak],
   );
+
+  // Start a session with a pre-added assistant message
+  const startSession = useCallback(() => {
+    const prefillMessage = {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content:
+        "Greetings. We are having an interview today. What is your name, and what is the position you are aiming for?",
+      ts: Date.now(),
+    };
+
+    const id = newSession(prefillMessage);
+    switchSession(id);
+  }, [newSession, switchSession]);
 
   const handleKeyDown = useCallback(
     (e) => {
@@ -117,27 +115,17 @@ export function useMentor(context) {
     [sendMessage],
   );
 
-  // ----------------------------
-  // STT — populates input, user sends manually
-  // ----------------------------
   const stt = useSTT({
-    onTranscript: (transcript) => {
-      setInput(transcript);
-    },
+    onTranscript: (transcript) => setInput(transcript),
   });
 
-  // ----------------------------
-  // RENAME LOGIC
-  // ----------------------------
   const startRename = (s) => {
     setEditingId(s.id);
     setEditingTitle(s.title);
   };
 
   const commitRename = () => {
-    if (editingTitle.trim()) {
-      renameSession(editingId, editingTitle.trim());
-    }
+    if (editingTitle.trim()) renameSession(editingId, editingTitle.trim());
     setEditingId(null);
   };
 
@@ -146,18 +134,11 @@ export function useMentor(context) {
     if (e.key === "Escape") setEditingId(null);
   };
 
-  // ----------------------------
-  // RETURN
-  // ----------------------------
   return {
-    sessionsData: {
-      sessions,
-      activeSession,
-      isTyping,
-    },
+    sessionsData: { sessions, activeSession, isTyping },
 
     sidebarActions: {
-      newSession,
+      startSession,
       switchSession,
       deleteSession,
     },
@@ -179,10 +160,6 @@ export function useMentor(context) {
       stt,
     },
 
-    ttsState: {
-      ttsEnabled,
-      toggleTTS,
-      speaking,
-    },
+    ttsState: { ttsEnabled, toggleTTS, speaking },
   };
 }
