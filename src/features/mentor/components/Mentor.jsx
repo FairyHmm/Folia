@@ -5,7 +5,7 @@ import ChatWindow from "./ChatWindow";
 import classes from "../styles/mentor.module.css";
 
 export default function Mentor({ context = null }) {
-  const { sessionsData, sidebarActions, renameState, chatActions } =
+  const { sessionsData, sidebarActions, renameState, chatActions, ttsState } =
     useMentor(context);
 
   return (
@@ -18,7 +18,11 @@ export default function Mentor({ context = null }) {
 
       <Divider className={classes.divider} />
 
-      <ChatWindow sessionsData={sessionsData} chatActions={chatActions} />
+      <ChatWindow
+        sessionsData={sessionsData}
+        chatActions={chatActions}
+        ttsState={ttsState}
+      />
     </Flex>
   );
 }

@@ -14,11 +14,33 @@
     }
   }
 
+  .text-field-listening {
+    border-color: var(--mantine-color-red-6);
+  }
+
+  .text-field-transcribing {
+    border-color: var(--mantine-color-orange-6);
+  }
+
   .send-btn {
     transition: transform 0.1s ease;
 
     &:not([disabled]):active {
       transform: scale(0.9);
     }
+  }
+}
+
+.mic-active {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
   }
 }
