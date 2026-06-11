@@ -1,71 +1,300 @@
 {
-  "targetRoles": ["Web UI/UX Engineer", "Web Backend Engineer"],
+  "targetRoles": ["AI Engineer", "Software Engineer"],
   "lines": [
-    "Self-taught developer with a strong focus on <<Web UI/UX Engineer>> work, particularly in {{Web Frontend}} development.",
-    "Within ((Core Web)), [[HTML]] and [[CSS]] are a genuine strength — pixel-perfect attention to detail evident throughout.",
-    "[[JavaScript]] fundamentals are solid, likely strengthened through hands-on project work rather than formal study.",
-    "Clearly passionate about [[React]] — multiple personal projects demonstrate confident, production-quality usage.",
-    "Has explored {{Design}} seriously. [[Figma]] usage goes beyond developer handoff into real UI/UX thinking.",
-    "[[Sketch]] appears occasionally but [[Figma]] is clearly the preferred tool.",
-    "Backend exposure is minimal. Some [[JavaScript]] server-side usage spotted but no dedicated {{Core Backend Systems}} work.",
-    "[[REST]] APIs have been consumed as a client but never designed or implemented."
+    "Computer Science student at HUST focused on <<AI Engineer>> work, particularly in {{Healthcare AI}}, [[LLM]] applications, [[RAG]] systems, and AI engineering.",
+    "Built AI prototypes combining [[FastAPI]], [[React]], ChromaDB, Vietnamese STT, and transformer models for dermatology support and mood analysis.",
+    "Proficient in [[Python]], [[C/C++]], [[PyTorch]], [[Scikit-learn]], [[Natural Language Processing]], [[Computer Vision]], [[LLM]], [[RAG]], and [[Prompt Engineering]].",
+    "Experienced in [[Model Evaluation]], [[Data Preprocessing]], [[AI-assisted Coding]], and using [[Pandas]], [[NumPy]], [[OpenCV]], and [[Jupyter Notebook]].",
+    "Also pursuing <<Software Engineer>> capabilities through web development, software engineering foundations, and tooling.",
+    "Familiar with [[Git]], [[GitHub]], [[Google Colab]], [[Kaggle]], [[Jupyter Notebook]], [[LaTeX]], [[Overleaf]], and [[Data Structures]].",
+    "Led AI development for MEdPilot, helping doctors convert Vietnamese consultation audio into structured clinical information, diagnostic suggestions, and [[RAG]]-grounded medical responses.",
+    "Led AI development for AI Mood Journal, a Vietnamese mental wellness journaling system that analyzes student entries and provides emotional reflection, supportive responses, activity suggestions, and safety alerts.",
+    "Currently strengthening theoretical foundations in [[Machine Learning]] and [[Deep Learning]]."
   ],
   "skills": {
-    "HTML": {
+    "AI Engineer": {
       "proficiency": "EXPERT",
-      "relevance": {
-        "Web UI/UX Engineer": "MODERATE"
-      }
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "HIGH" }
     },
-    "CSS": {
-      "proficiency": "EXPERT",
-      "relevance": {
-        "Web UI/UX Engineer": "HIGH"
-      }
-    },
-    "JavaScript": {
+    "Software Engineer": {
       "proficiency": "EXPERIENCED",
       "relevance": {
-        "Web UI/UX Engineer": "CRITICAL",
-        "Web Backend Engineer": "HIGH"
+        "Software Engineer": "CRITICAL"
       }
+    },
+
+    "Machine Learning & Deep Learning": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "ML Core Concepts": {
+      "proficiency": "BASIC",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "ML Tools": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+
+    "Generative AI & LLMs": {
+      "proficiency": "EXPERIENCED",
+      "relevance": {
+        "AI Engineer": "CRITICAL",
+        "Software Engineer": "MODERATE"
+      }
+    },
+    "GenAI Core Concepts": {
+      "proficiency": "EXPERT",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "GenAI Tools": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+
+    "Computer Vision & NLP": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "NLP Core Concepts": {
+      "proficiency": "EXPERT",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "NLP Tools": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+
+    "AI Tools & Workflows": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "MODERATE" }
+    },
+
+    "Python": {
+      "proficiency": "EXPERT",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "HIGH" }
+    },
+    "C/C++": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "MODERATE", "Software Engineer": "HIGH" }
+    },
+    "Machine Learning": {
+      "proficiency": "BASIC",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "Deep Learning": {
+      "proficiency": "BASIC",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "PyTorch": {
+      "proficiency": "EXPERT",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "Scikit-learn": {
+      "proficiency": "EXPERT",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "Hugging Face Transformers": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "Hugging Face": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "LLM": {
+      "proficiency": "EXPERT",
+      "relevance": {
+        "AI Engineer": "CRITICAL",
+        "Software Engineer": "MODERATE"
+      }
+    },
+    "RAG": {
+      "proficiency": "EXPERT",
+      "relevance": {
+        "AI Engineer": "CRITICAL",
+        "Software Engineer": "MODERATE"
+      }
+    },
+    "Prompt Engineering": {
+      "proficiency": "EXPERT",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "Fine-tuning": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "Natural Language Processing": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "Computer Vision": {
+      "proficiency": "EXPERT",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "Data Preprocessing": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "Model Evaluation": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "AI-assisted Coding": {
+      "proficiency": "EXPERIENCED",
+      "relevance": {
+        "AI Engineer": "MODERATE",
+        "Software Engineer": "MODERATE"
+      }
+    },
+    "Pandas": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "NumPy": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "OpenCV": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "Matplotlib": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "Streamlit": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "MODERATE", "Software Engineer": "LOW" }
+    },
+    "Deplotment & APIs": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "HIGH" }
+    },
+    "Data infrastructure & MLOps": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "HIGH" }
+    },
+    "FastAPI": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "HIGH" }
     },
     "React": {
+      "proficiency": "BASIC",
+      "relevance": { "AI Engineer": "Low", "Software Engineer": "HIGH" }
+    },
+    "Web Frameworks": {
+      "proficiency": "BASIC",
+      "relevance": { "AI Engineer": "Low", "Software Engineer": "HIGH" }
+    },
+    "Software Tools": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "MODERATE", "Software Engineer": "HIGH" }
+    },
+    "Git": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "MODERATE", "Software Engineer": "HIGH" }
+    },
+    "GitHub": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "MODERATE", "Software Engineer": "HIGH" }
+    },
+    "Google Colab": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "LOW", "Software Engineer": "LOW" }
+    },
+    "Kaggle": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "LOW", "Software Engineer": "LOW" }
+    },
+    "Jupyter Notebook": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "LOW", "Software Engineer": "LOW" }
+    },
+    "LaTeX": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "Software Engineer": "LOW", "AI Engineer": "LOW" }
+    },
+    "Overleaf": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "Software Engineer": "LOW", "AI Engineer": "LOW" }
+    },
+    "Data Structures": {
       "proficiency": "EXPERIENCED",
       "relevance": {
-        "Web UI/UX Engineer": "CRITICAL"
+        "AI Engineer": "MODERATE",
+        "Software Engineer": "CRITICAL"
       }
     },
-    "Figma": {
+    "Healthcare AI": {
       "proficiency": "EXPERIENCED",
-      "relevance": {
-        "Web UI/UX Engineer": "HIGH"
-      }
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
     },
-    "Sketch": {
-      "proficiency": "BASIC",
-      "relevance": {
-        "Web UI/UX Engineer": "LOW"
-      }
+    "ChromaDB": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "MODERATE" }
     },
-    "REST": {
-      "proficiency": "BASIC",
-      "relevance": {
-        "Web UI/UX Engineer": "MODERATE",
-        "Web Backend Engineer": "CRITICAL"
-      }
+    "Vietnamese STT": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "Transformer Models": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+
+    "vLLM": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "CRITICAL", "Software Engineer": "LOW" }
+    },
+    "Qwen2.5-1.5B": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "Gemini": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "PhoWhisper": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "PhoBERT": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
+    },
+    "GPT-4o-mini": {
+      "proficiency": "EXPERIENCED",
+      "relevance": { "AI Engineer": "HIGH", "Software Engineer": "LOW" }
     }
   },
+
   "artifacts": [
     {
-      "url": "https://github.com/user/react-portfolio",
-      "skills": ["React", "JavaScript", "CSS"],
+      "url": "[https://github.com/user/medpilot](https://github.com/user/medpilot)",
+      "skills": [
+        "FastAPI",
+        "React",
+        "vLLM",
+        "Qwen2.5-1.5B",
+        "Gemini",
+        "ChromaDB",
+        "PhoWhisper",
+        "RAG"
+      ],
       "type": "github"
     },
     {
-      "url": "https://figma.com/file/abc123",
-      "skills": ["Figma", "Sketch"],
-      "type": "design"
+      "url": "[https://github.com/user/ai-mood-journal](https://github.com/user/ai-mood-journal)",
+      "skills": [
+        "Python",
+        "Hugging Face",
+        "PhoBERT",
+        "GPT-4o-mini",
+        "Pandas",
+        "Matplotlib"
+      ],
+      "type": "github"
     }
   ]
 }

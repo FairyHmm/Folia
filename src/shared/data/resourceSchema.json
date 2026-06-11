@@ -1,154 +1,262 @@
 {
-  "Core Web": [
+  "Machine Learning": [
     {
-      "title": "freeCodeCamp — Responsive Web Design",
-      "url": "https://freecodecamp.org/learn/2022/responsive-web-design",
+      "title": "Machine Learning Specialization — Andrew Ng",
+      "url": "https://coursera.org/specializations/machine-learning-introduction",
       "minProficiency": "BASIC"
     },
     {
-      "title": "The Odin Project — Foundations",
-      "url": "https://theodinproject.com/paths/foundations",
-      "minProficiency": "BASIC"
-    },
-    {
-      "title": "web.dev — Learn CSS",
-      "url": "https://web.dev/learn/css",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "JavaScript": [
-    {
-      "title": "javascript.info",
-      "url": "https://javascript.info",
-      "minProficiency": "BASIC"
-    },
-    {
-      "title": "Eloquent JavaScript",
-      "url": "https://eloquentjavascript.net",
-      "minProficiency": "BASIC"
-    },
-    {
-      "title": "You Don't Know JS",
-      "url": "https://github.com/getify/You-Dont-Know-JS",
+      "title": "Hands-On Machine Learning",
+      "url": "https://oreilly.com/library/view/hands-on-machine-learning/9781098125967",
       "minProficiency": "EXPERIENCED"
     }
   ],
-  "React": [
+
+  "Deep Learning": [
     {
-      "title": "React docs — react.dev",
-      "url": "https://react.dev",
+      "title": "Deep Learning Specialization",
+      "url": "https://coursera.org/specializations/deep-learning",
       "minProficiency": "BASIC"
     },
     {
-      "title": "Epic React by Kent C. Dodds",
-      "url": "https://epicreact.dev",
+      "title": "Dive into Deep Learning",
+      "url": "https://d2l.ai",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "PyTorch": [
+    {
+      "title": "PyTorch Tutorials",
+      "url": "https://pytorch.org/tutorials",
       "minProficiency": "BASIC"
     },
     {
-      "title": "Patterns.dev",
-      "url": "https://patterns.dev",
+      "title": "Learn PyTorch for Deep Learning",
+      "url": "https://learnpytorch.io",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Scikit-learn": [
+    {
+      "title": "Scikit-learn User Guide",
+      "url": "https://scikit-learn.org/stable/user_guide.html",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "TensorFlow": [
+    {
+      "title": "TensorFlow Tutorials",
+      "url": "https://tensorflow.org/tutorials",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "LLM": [
+    {
+      "title": "Hugging Face LLM Course",
+      "url": "https://huggingface.co/learn/llm-course",
+      "minProficiency": "BASIC"
+    },
+    {
+      "title": "LLM University",
+      "url": "https://github.com/mlabonne/llm-course",
       "minProficiency": "EXPERIENCED"
     }
   ],
-  "Web Frameworks": [
+
+  "RAG": [
     {
-      "title": "JavaScript framework comparison — Fireship",
-      "url": "https://youtube.com/watch?v=cuHDQhDhvPE",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "Vue": [
-    {
-      "title": "Vue docs — vuejs.org",
-      "url": "https://vuejs.org/guide/introduction",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "Angular": [
-    {
-      "title": "Angular docs — angular.dev",
-      "url": "https://angular.dev/overview",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "Design Tools": [
-    {
-      "title": "Figma — official tutorials",
-      "url": "https://help.figma.com/hc/en-us/sections/4405269443991",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "Figma": [
-    {
-      "title": "Figma for Developers — Scrimba",
-      "url": "https://scrimba.com/learn/figmafordevs",
+      "title": "LangChain RAG Tutorials",
+      "url": "https://python.langchain.com/docs/tutorials/rag",
       "minProficiency": "BASIC"
     },
     {
-      "title": "Auto Layout deep dive — Figma",
-      "url": "https://youtube.com/watch?v=TyaGpGDFczw",
-      "minProficiency": "BASIC"
-    },
-    {
-      "title": "Design systems in Figma",
-      "url": "https://youtube.com/watch?v=EK-pHkc5EL4",
+      "title": "Advanced RAG Techniques",
+      "url": "https://huggingface.co/learn/cookbook",
       "minProficiency": "EXPERIENCED"
     }
   ],
-  "Core Backend Systems": [
+
+  "Prompt Engineering": [
     {
-      "title": "Backend dev roadmap — roadmap.sh",
-      "url": "https://roadmap.sh/backend",
+      "title": "Prompt Engineering Guide",
+      "url": "https://promptingguide.ai",
       "minProficiency": "BASIC"
     }
   ],
-  "API Architecture": [
+
+  "LangChain": [
     {
-      "title": "REST API design — Microsoft docs",
-      "url": "https://learn.microsoft.com/en-us/azure/architecture/best-practices/api-design",
+      "title": "LangChain Documentation",
+      "url": "https://python.langchain.com/docs/introduction",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "vLLM": [
+    {
+      "title": "vLLM Documentation",
+      "url": "https://docs.vllm.ai",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Hugging Face": [
+    {
+      "title": "Hugging Face Course",
+      "url": "https://huggingface.co/learn",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Natural Language Processing": [
+    {
+      "title": "Stanford CS224N",
+      "url": "https://web.stanford.edu/class/cs224n",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Computer Vision": [
+    {
+      "title": "Stanford CS231N",
+      "url": "https://cs231n.stanford.edu",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "OpenCV": [
+    {
+      "title": "OpenCV Official Tutorials",
+      "url": "https://docs.opencv.org/master/d9/df8/tutorial_root.html",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "YOLO": [
+    {
+      "title": "Ultralytics YOLO Docs",
+      "url": "https://docs.ultralytics.com",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Apache Spark": [
+    {
+      "title": "Spark Documentation",
+      "url": "https://spark.apache.org/docs/latest",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "MLflow": [
+    {
+      "title": "MLflow Documentation",
+      "url": "https://mlflow.org/docs/latest",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Weights & Biases": [
+    {
+      "title": "W&B Academy",
+      "url": "https://wandb.ai/site/resources",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Python": [
+    {
+      "title": "Python Official Tutorial",
+      "url": "https://docs.python.org/3/tutorial",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Docker": [
+    {
+      "title": "Docker Get Started",
+      "url": "https://docs.docker.com/get-started",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Kubernetes": [
+    {
+      "title": "Kubernetes Basics",
+      "url": "https://kubernetes.io/docs/tutorials/kubernetes-basics",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "AWS": [
+    {
+      "title": "AWS Skill Builder",
+      "url": "https://skillbuilder.aws",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "FastAPI": [
+    {
+      "title": "FastAPI Tutorial",
+      "url": "https://fastapi.tiangolo.com/tutorial",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Django": [
+    {
+      "title": "Django Official Tutorial",
+      "url": "https://docs.djangoproject.com/en/stable/intro/tutorial01",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Flask": [
+    {
+      "title": "Flask Documentation",
+      "url": "https://flask.palletsprojects.com",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Git": [
+    {
+      "title": "Pro Git",
+      "url": "https://git-scm.com/book/en/v2",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "GitHub": [
+    {
+      "title": "GitHub Skills",
+      "url": "https://skills.github.com",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "Data Structures": [
+    {
+      "title": "NeetCode Roadmap",
+      "url": "https://neetcode.io/roadmap",
+      "minProficiency": "BASIC"
+    }
+  ],
+
+  "SQL": [
+    {
+      "title": "SQLBolt",
+      "url": "https://sqlbolt.com",
       "minProficiency": "BASIC"
     },
     {
-      "title": "GraphQL — official docs",
-      "url": "https://graphql.org/learn",
-      "minProficiency": "BASIC"
-    },
-    {
-      "title": "APIs You Won't Hate",
-      "url": "https://apisyouwonthate.com",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "Databases & Storage": [
-    {
-      "title": "SQL vs NoSQL explained — Fireship",
-      "url": "https://youtube.com/watch?v=W2Z7fbCLSTw",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "PostgreSQL": [
-    {
-      "title": "PostgreSQL official tutorial",
+      "title": "PostgreSQL Tutorial",
       "url": "https://postgresql.org/docs/current/tutorial.html",
-      "minProficiency": "BASIC"
-    },
-    {
-      "title": "pgexercises.com",
-      "url": "https://pgexercises.com",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "MongoDB": [
-    {
-      "title": "MongoDB University",
-      "url": "https://learn.mongodb.com",
-      "minProficiency": "BASIC"
-    }
-  ],
-  "Redis": [
-    {
-      "title": "Redis University",
-      "url": "https://university.redis.com",
       "minProficiency": "BASIC"
     }
   ]

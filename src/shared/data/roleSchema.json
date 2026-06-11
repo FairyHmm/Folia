@@ -1,91 +1,103 @@
 [
   {
-    "title": "Web UI/UX Engineer",
+    "title": "AI Engineer",
     "domains": {
-      "Web Frontend": {
-        "Core Web": ["HTML", "CSS", "JavaScript"],
-        "Web Frameworks": ["JavaScript", "*React", "*Vue", "*Angular"]
+      "Machine Learning & Deep Learning": {
+        "ML Core Concepts": [
+          "Machine Learning",
+          "Deep Learning",
+          "Python",
+          "C/C++"
+        ],
+        "ML Tools": ["*PyTorch", "*Scikit-learn", "Pandas", "NumPy"]
       },
-      "Design": {
-        "Design Tools": ["Figma", "Sketch"]
+      "Generative AI & LLMs": {
+        "GenAI Core Concepts": [
+          "LLM",
+          "RAG",
+          "Prompt Engineering",
+          "Fine-tuning"
+        ],
+        "GenAI Tools": ["*LangChain", "*vLLM", "*Hugging Face Transformers"]
+      },
+      "Computer Vision & NLP": {
+        "NLP Core Concepts": ["Computer Vision", "Natural Language Processing"],
+        "NLP Tools": ["*OpenCV", "*YOLO", "*Detectron2"]
+      },
+      "Data Infrastructure & MLOps": {
+        "Vector Databases": ["Pinecone", "Redis", "Elasticsearch"],
+        "Deployment & APIs": ["FastAPI", "Docker", "REST"],
+        "AI Tools & Workflows": [
+          "MLflow",
+          "Weights & Biases",
+          "Jupyter Notebook",
+          "Google Colab",
+          "Kaggle",
+          "Data Preprocessing",
+          "Model Evaluation",
+          "AI-assisted Coding"
+        ]
       }
     }
   },
   {
-    "title": "Web Backend Engineer",
+    "title": "Software Engineer",
     "domains": {
-      "Core Backend Systems": {
-        "Languages": ["Python", "JavaScript", "Go", "Java"],
-        "API Architecture": ["REST", "GraphQL", "gRPC"]
+      "Web & API Development": {
+        "Core Web & Protocols": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "TypeScript",
+          "REST",
+          "GraphQL",
+          "gRPC"
+        ],
+        "Web Frameworks": [
+          "*React",
+          "*Angular",
+          "*Vue",
+          "*Flask",
+          "*Django"
+        ]
       },
-      "Databases & Storage": {
-        "Relational": ["PostgreSQL", "MySQL"],
-        "NoSQL": ["MongoDB", "Redis"]
-      }
-    }
-  },
-  {
-    "title": "Cross-Platform Mobile Engineer",
-    "domains": {
-      "Hybrid Runtimes": {
-        "Languages": ["JavaScript", "TypeScript", "Dart"],
-        "Mobile Frameworks": ["*React Native", "*Flutter"]
+      "Cloud & DevOps": {
+        "Infrastructure & Automation": [
+          "AWS",
+          "Azure",
+          "GCP",
+          "Docker",
+          "Kubernetes",
+          "Terraform",
+          "Ansible"
+        ],
+        "CI/CD & Security": [
+          "GitHub Actions",
+          "GitLab CI",
+          "Jenkins",
+          "OAuth2",
+          "JWT",
+          "SonarQube",
+          "OWASP ZAP"
+        ]
       },
-      "Native Integrations": {
-        "Platform Languages": ["Swift", "Kotlin"],
-        "Design Tools": ["Figma", "Sketch"]
-      }
-    }
-  },
-  {
-    "title": "Cloud Infrastructure Engineer",
-    "domains": {
-      "Platform Automation": {
-        "Containers": ["Docker", "Kubernetes"],
-        "Infrastructure-as-Code": ["Terraform", "Ansible"]
-      },
-      "Cloud Architecture": {
-        "Public Clouds": ["AWS", "Azure", "GCP"],
-        "Scripting": ["Bash", "Python"]
-      }
-    }
-  },
-  {
-    "title": "Big Data Platform Engineer",
-    "domains": {
-      "Data Infrastructure": {
-        "Processing": ["*Spark", "Kafka"],
-        "Orchestration": ["Airflow", "Prefect"]
-      },
-      "Analytical Storage": {
-        "Cloud Warehouses": ["Snowflake", "BigQuery"],
-        "Data Lakes": ["AWS S3", "Azure Blob"]
-      }
-    }
-  },
-  {
-    "title": "MLOps Engineer",
-    "domains": {
-      "Pipeline Lifecycle": {
-        "Experiment Tracking": ["MLflow", "Weights & Biases"],
-        "Containers": ["Docker", "Kubernetes"]
-      },
-      "Production Serving": {
-        "API Frameworks": ["*FastAPI", "*Flask", "Python"],
-        "Vector Databases": ["Pinecone", "Redis"]
-      }
-    }
-  },
-  {
-    "title": "Application Security Engineer",
-    "domains": {
-      "SecOps & Auditing": {
-        "Scanning Tools": ["SonarQube", "OWASP ZAP"],
-        "Access Control": ["OAuth2", "JWT"]
-      },
-      "Infrastructure Hardening": {
-        "Containers": ["Docker", "Kubernetes"],
-        "Cloud Platforms": ["AWS", "Azure"]
+      "Databases & Engineering Foundations": {
+        "Databases": [
+          "SQL",
+          "PostgreSQL",
+          "MySQL",
+          "MongoDB",
+          "Redis",
+          "Cassandra"
+        ],
+        "Software Tools": [
+          "Git",
+          "GitHub",
+          "Python",
+          "Data Structures",
+          "LaTeX",
+          "Overleaf"
+        ]
       }
     }
   }
