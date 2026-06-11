@@ -11,6 +11,7 @@ import {
   getProficiencyNodeColor,
   getArtifactNodeColor,
   getResourceNodeColor,
+  getNoteNodeColor,
 } from "./graphStyleTokens";
 import { useReferenceStore } from "../../../shared/store/referenceStore";
 import { cvStore } from "../../../shared/store/cvStore";
@@ -19,23 +20,18 @@ import { ACTION_PREFIX, CONTENT_PREFIX } from "./graphUtils";
 function createNodeAndLink(parent, idSuffix, linkDistance, props = {}) {
   const offset = 2;
 
-  // Read the parent size and make sure links clear its boundary
   const parentRadius = parent.radius || parent.val || 12;
-  const dynamicallyScaledDistance = linkDistance + (parentRadius * 1.5);
+  const dynamicallyScaledDistance = linkDistance + parentRadius * 1.5;
 
-  // If directional angles are provided, use them to calculate an outward projection vector
   let rx = (Math.random() - 0.5) * offset;
   let ry = (Math.random() - 0.5) * offset;
   let outwardVx = props.vx ?? 0;
   let outwardVy = props.vy ?? 0;
 
   if (props.angle !== undefined) {
-    // Project starting positions slightly outward along their explicit vector spoke
     const spawnDistance = parentRadius + 4;
     rx = Math.cos(props.angle) * spawnDistance;
     ry = Math.sin(props.angle) * spawnDistance;
-
-    // Give them a gentle, controlled velocity kick outward in that exact heading
     outwardVx = Math.cos(props.angle) * 0.4;
     outwardVy = Math.sin(props.angle) * 0.4;
   }
@@ -45,21 +41,23 @@ function createNodeAndLink(parent, idSuffix, linkDistance, props = {}) {
     parentId: parent.id,
     x: parent.x != null ? parent.x + rx : rx,
     y: parent.y != null ? parent.y + ry : ry,
-    z: parent.z != null ? parent.z + (Math.random() - 0.5) * offset : (Math.random() - 0.5) * offset,
+    z:
+      parent.z != null
+        ? parent.z + (Math.random() - 0.5) * offset
+        : (Math.random() - 0.5) * offset,
     vx: outwardVx,
     vy: outwardVy,
     vz: props.vz ?? 0,
     ...props,
   };
 
-  // Clean up helper tracking fields from the D3 data layer
   delete node.angle;
 
   const link = {
     source: parent.id,
     target: node.id,
     linkDistance: dynamicallyScaledDistance,
-    linkStrength: props.spawning ? 0.2 : 1.0, // Give it a bit of tension immediately to hold its line
+    linkStrength: props.spawning ? 0.2 : 1.0,
     spawning: props.spawning ?? false,
     color: props.linkColor || "#ffffff11",
   };
@@ -77,7 +75,6 @@ export function buildContentNodes(actionNode, skillNode, linkDistance) {
     const currentLevel = normalizeProficiency(skillNode.proficiency);
 
     levels.forEach((level, index) => {
-      // Fan out content children in a structured semicircle arc (180 degrees)
       const arcAngle = (index / (levels.length - 1 || 1)) * Math.PI;
 
       const { node, link } = createNodeAndLink(
@@ -93,6 +90,7 @@ export function buildContentNodes(actionNode, skillNode, linkDistance) {
           angle: arcAngle,
           color: getProficiencyNodeColor(level, currentLevel),
           linkColor: "#ffffff22",
+          ...baseSpawn,
         },
       );
       nodes.push(node);
@@ -103,12 +101,13 @@ export function buildContentNodes(actionNode, skillNode, linkDistance) {
     if (config) {
       const items = config.fetch(skillNode);
       const shape = getActionNodeShape(actionNode.actionType);
+      const hasAddButton = config.hasAddButton;
 
-      // Calculate total spokes including the extra "+ Add" button
-      const totalElements = items.length + 1;
+      const totalElements = items.length + (hasAddButton ? 1 : 0);
+      const denominator = totalElements || 1;
 
       items.forEach((item, index) => {
-        const spokeAngle = (index / totalElements) * (Math.PI * 2);
+        const spokeAngle = (index / denominator) * (Math.PI * 2);
 
         const { node, link } = createNodeAndLink(
           actionNode,
@@ -127,23 +126,24 @@ export function buildContentNodes(actionNode, skillNode, linkDistance) {
         links.push(link);
       });
 
-      // Add Button Spoke placement
-      const addAngle = ((totalElements - 1) / totalElements) * (Math.PI * 2);
-      const { node, link } = createNodeAndLink(
-        actionNode,
-        `${CONTENT_PREFIX}add`,
-        linkDistance,
-        {
-          label: "+ Add",
-          nodeType: NodeType.ADD_BUTTON,
-          shape: "circle",
-          color: "#ffffff",
-          angle: addAngle,
-          ...baseSpawn,
-        },
-      );
-      nodes.push(node);
-      links.push(link);
+      if (hasAddButton) {
+        const addAngle = ((totalElements - 1) / denominator) * (Math.PI * 2);
+        const { node, link } = createNodeAndLink(
+          actionNode,
+          `${CONTENT_PREFIX}add`,
+          linkDistance,
+          {
+            label: "+ Add",
+            nodeType: NodeType.ADD_BUTTON,
+            shape: "circle",
+            color: "#ffffff",
+            angle: addAngle,
+            ...baseSpawn,
+          },
+        );
+        nodes.push(node);
+        links.push(link);
+      }
     }
   }
 
@@ -156,7 +156,6 @@ export function buildActionNodes(skillNode, linkDistance) {
   const actions = Object.values(ActionType);
 
   actions.forEach((actionType, index) => {
-    // Distribute actions perfectly around a full 360-degree circle
     const radialAngle = (index / actions.length) * (Math.PI * 2);
 
     const { node, link } = createNodeAndLink(
@@ -184,17 +183,31 @@ export function buildActionNodes(skillNode, linkDistance) {
 
 const CONTENT_CONFIG = {
   [ActionType.RESOURCE]: {
-    fetch: (skill) => useReferenceStore.getState().getResourcesForSkill(skill.label),
+    hasAddButton: false,
+    fetch: (skill) => {
+      const currentLevel = normalizeProficiency(skill.proficiency);
+      const all = useReferenceStore
+        .getState()
+        .getResourcesForSkill(skill.label);
+      return all.filter((r) => {
+        const min = Proficiency[r.minProficiency] ?? Proficiency.UNKNOWN;
+        return currentLevel >= min;
+      });
+    },
     getProps: (res) => ({
       label: res.title,
       url: res.url,
       color: getResourceNodeColor(),
     }),
   },
+
   [ActionType.ARTIFACT]: {
+    hasAddButton: true,
     fetch: (skill) => {
       const data = cvStore.getState().cvData;
-      return (data?.artifacts || []).filter((a) => a.skills?.includes(skill.label));
+      return (data?.artifacts || []).filter((a) =>
+        a.skills?.includes(skill.label),
+      );
     },
     getProps: (art) => ({
       label: art.type,
@@ -202,8 +215,17 @@ const CONTENT_CONFIG = {
       color: getArtifactNodeColor(),
     }),
   },
+
   [ActionType.NOTE]: {
-    fetch: () => [{ label: "Notes empty" }],
-    getProps: () => ({ label: "Notes empty", color: "#a78bfa" }),
+    hasAddButton: true,
+    fetch: (skill) => {
+      const data = cvStore.getState().cvData;
+      return (data?.notes || []).filter((n) => n.skillId === skill.id);
+    },
+    getProps: (note) => ({
+      label: note.text,
+      noteId: note.id,
+      color: getNoteNodeColor(),
+    }),
   },
 };

@@ -102,9 +102,9 @@ export const PROFICIENCY_LABELS = {
 export function normalizeProficiency(value) {
   if (value == null) return Proficiency.UNKNOWN;
   if (typeof value === "number") return value;
-  return Object.values(Proficiency).includes(value)
-    ? Proficiency[value]
-    : Proficiency.UNKNOWN;
+  if (typeof value === "string" && value in Proficiency)
+    return Proficiency[value];
+  return Proficiency.UNKNOWN;
 }
 
 export function getProficiencyNodeColor(level, currentLevel) {
@@ -122,4 +122,8 @@ export function getArtifactNodeColor() {
 
 export function getResourceNodeColor() {
   return "#38bdf8";
+}
+
+export function getNoteNodeColor() {
+  return "#a78bfa";
 }
