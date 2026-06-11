@@ -13,34 +13,31 @@ const Graph3D = memo(function Graph3DWrapper({
   const fgInternalRef = useRef(null);
   const displayRef = useRef(graphConfigStore.getState().display);
 
-  const nodeThreeObject = useCallback((node) => {
-    const style = resolveNode3D(node, displayRef.current);
-    return renderNode3D(style);
-  }, []);
-
   useEffect(() => {
     const unsub = graphConfigStore.subscribe((state) => {
       displayRef.current = state.display;
 
-      const nodes = commonProps.graphData?.nodes;
-      if (!nodes) return;
-
-      for (const node of nodes) {
-        const style = resolveNode3D(node, displayRef.current);
-        renderNode3D(style);
-      }
+      // IMPORTANT: force graph refresh so nodeThreeObject re-evaluates
+      fgInternalRef.current?.refresh?.();
     });
 
     return unsub;
-  }, [commonProps.graphData]);
+  }, []);
 
   const setRefs = useCallback(
     (instance) => {
       fgInternalRef.current = instance;
       if (typeof graphRef === "function") graphRef(instance);
+      else if (graphRef) graphRef.current = instance;
     },
     [graphRef],
   );
+
+  // ❗ NO useCallback (must stay fresh)
+  const nodeThreeObject = (node) => {
+    const style = resolveNode3D(node, displayRef.current);
+    return renderNode3D(style);
+  };
 
   return (
     <ForceGraph3D

@@ -1,4 +1,4 @@
-import { memo, useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import ForceGraph2D from "react-force-graph-2d";
 import { graphConfigStore } from "../store/graphConfigStore";
 import { resolveNode2D } from "./nodeStyleResolver2D";
@@ -13,10 +13,15 @@ const Graph2D = memo(function Graph2DWrapper({
 }) {
   const displayRef = useRef(graphConfigStore.getState().display);
 
+  // 🔥 forces redraw when sliders change
+  const [, forceRender] = useState(0);
+
   useEffect(() => {
     const unsub = graphConfigStore.subscribe((state) => {
       displayRef.current = state.display;
+      forceRender((x) => x + 1);
     });
+
     return unsub;
   }, []);
 
