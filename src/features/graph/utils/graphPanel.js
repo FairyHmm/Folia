@@ -27,7 +27,7 @@ export const graphPanel = [
         label: "Node Size",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 0.1, max: 20, step: 0.1 },
+        props: { size: "xs", min: 0.1, max: 10, step: 0.1 },
       },
       // --- Glow Layer ---
       {

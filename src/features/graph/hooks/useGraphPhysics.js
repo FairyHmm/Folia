@@ -37,16 +37,18 @@ export function useGraphPhysics(instanceRef, dimension) {
     const fg = instanceRef.current;
     if (!fg?.d3Force) return;
 
-    // 1. Initialize forces if they don't exist yet
+    // Initialize custom layout structural branches if missing
     initCustomForces(fg);
 
     const { charge, gravity, distance } = graphConfigStore.getState().forces;
     const g = gravity / 100;
     const distanceScaleFactor = distance / 40;
 
-    // 2. MUTATE the existing forces instead of passing a brand new forceManyBody() object
+    // Mutate existing properties directly instead of instantiating new objects on every frame tick
     fg.d3Force("charge")?.strength((node) =>
-      isActionNode(node.id) || isContentNode(node.id) ? 0 : -10 * (charge + 1) * distanceScaleFactor,
+      isActionNode(node.id) || isContentNode(node.id)
+        ? 0
+        : -10 * (charge + 1) * distanceScaleFactor,
     );
 
     fg.d3Force("menu-charge")?.strength((node) => {
@@ -90,13 +92,18 @@ export function useGraphPhysics(instanceRef, dimension) {
         const targetId = typeof link.target === "object" ? link.target.id : link.target;
         const sourceId = typeof link.source === "object" ? link.source.id : link.source;
 
+        // CRITICAL FIX: If the link payload specifies a dynamic linkDistance, use it!
+        if (link.linkDistance != null) {
+          return link.linkDistance;
+        }
+
         if (
           isActionNode(targetId) ||
           isActionNode(sourceId) ||
           isContentNode(targetId) ||
           isContentNode(sourceId)
         ) {
-          return link.linkDistance || globalDistance * 0.35;
+          return globalDistance * 0.35;
         }
         return link.linkDistance || globalDistance;
       })
@@ -153,7 +160,6 @@ export function useGraphPhysics(instanceRef, dimension) {
     }
   }, [instanceRef]);
 
-  // THE RUNNING ENGINE TICK MECHANISM
   const onEngineTick = useRef(() => {
     const fg = instanceRef.current;
     if (!fg?.d3Force) return;
@@ -187,8 +193,6 @@ export function useGraphPhysics(instanceRef, dimension) {
       }
     });
 
-    // ✅ Calling applyForces every tick is completely safe and fast now
-    // because it mutates existing properties instead of rebuilding D3 objects!
     applyForcesRef.current?.();
   }).current;
 
