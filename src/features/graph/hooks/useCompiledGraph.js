@@ -1,5 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 import { graphDataStore } from "../../../shared/store/graphDataStore";
+import { graphConfigStore } from "../store/graphConfigStore";
 import {
   buildActionNodes,
   buildContentNodes,
@@ -17,10 +18,17 @@ export function useCompiledGraph() {
     let nodes = [...baseNodes];
     let links = [...baseLinks];
 
+    const { distance } = graphConfigStore.getState().forces;
+    // Action nodes orbit at a fixed readable distance, not a fraction of the global slider
+    const linkDistance = Math.max(distance * 0.5, 20);
+
     if (expandedSkillId) {
       const skill = nodes.find((n) => n.id === expandedSkillId);
       if (skill) {
-        const { nodes: actions, links: actionLinks } = buildActionNodes(skill);
+        const { nodes: actions, links: actionLinks } = buildActionNodes(
+          skill,
+          linkDistance,
+        );
         nodes.push(...actions);
         links.push(...actionLinks);
       }
@@ -33,6 +41,7 @@ export function useCompiledGraph() {
         const { nodes: contents, links: contentLinks } = buildContentNodes(
           action,
           skill,
+          linkDistance,
         );
         nodes.push(...contents);
         links.push(...contentLinks);

@@ -12,21 +12,31 @@ import {
   getArtifactNodeColor,
   getResourceNodeColor,
 } from "./graphStyleTokens";
-import { graphConfigStore } from "../store/graphConfigStore";
 import { useReferenceStore } from "../../../shared/store/referenceStore";
 import { cvStore } from "../../../shared/store/cvStore";
 import { ACTION_PREFIX, CONTENT_PREFIX } from "./graphUtils";
 
-function createNodeAndLink(parent, idSuffix, props = {}) {
-  const distance = graphConfigStore.getState().forces.distance;
-  const linkDistance = distance * 0.22;
+function createNodeAndLink(parent, idSuffix, linkDistance, props = {}) {
+  const offset = 5;
 
   const node = {
     id: `${parent.id}${idSuffix}`,
     parentId: parent.id,
-    x: parent.x,
-    y: parent.y,
-    z: parent.z,
+    x:
+      parent.x != null
+        ? parent.x + (Math.random() - 0.5) * offset
+        : (Math.random() - 0.5) * offset,
+    y:
+      parent.y != null
+        ? parent.y + (Math.random() - 0.5) * offset
+        : (Math.random() - 0.5) * offset,
+    z:
+      parent.z != null
+        ? parent.z + (Math.random() - 0.5) * offset
+        : (Math.random() - 0.5) * offset,
+    vx: props.vx ?? 0,
+    vy: props.vy ?? 0,
+    vz: props.vz ?? 0,
     ...props,
   };
 
@@ -34,14 +44,15 @@ function createNodeAndLink(parent, idSuffix, props = {}) {
     source: parent.id,
     target: node.id,
     linkDistance,
-    linkStrength: 1.0,
+    linkStrength: props.spawning ? 0 : 1.0,
+    spawning: props.spawning ?? false,
     color: props.linkColor || "#ffffff11",
   };
 
   return { node, link };
 }
 
-export function buildContentNodes(actionNode, skillNode) {
+export function buildContentNodes(actionNode, skillNode, linkDistance) {
   const nodes = [];
   const links = [];
   const baseSpawn = { spawning: true, spawnAge: 0 };
@@ -52,6 +63,7 @@ export function buildContentNodes(actionNode, skillNode) {
       const { node, link } = createNodeAndLink(
         actionNode,
         `${CONTENT_PREFIX}${level}`,
+        linkDistance,
         {
           label: PROFICIENCY_LABELS[level],
           nodeType: NodeType.CONTENT,
@@ -75,6 +87,7 @@ export function buildContentNodes(actionNode, skillNode) {
         const { node, link } = createNodeAndLink(
           actionNode,
           `${CONTENT_PREFIX}${index}`,
+          linkDistance,
           {
             nodeType: NodeType.CONTENT,
             actionType: actionNode.actionType,
@@ -91,6 +104,7 @@ export function buildContentNodes(actionNode, skillNode) {
       const { node, link } = createNodeAndLink(
         actionNode,
         `${CONTENT_PREFIX}add`,
+        linkDistance,
         {
           label: "+ Add",
           nodeType: NodeType.ADD_BUTTON,
@@ -107,7 +121,7 @@ export function buildContentNodes(actionNode, skillNode) {
   return { nodes, links };
 }
 
-export function buildActionNodes(skillNode) {
+export function buildActionNodes(skillNode, linkDistance) {
   const nodes = [];
   const links = [];
 
@@ -115,6 +129,7 @@ export function buildActionNodes(skillNode) {
     const { node, link } = createNodeAndLink(
       skillNode,
       `${ACTION_PREFIX}${actionType}`,
+      linkDistance,
       {
         label: ACTION_LABELS[actionType],
         nodeType: NodeType.ACTION,

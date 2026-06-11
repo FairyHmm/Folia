@@ -1,189 +1,164 @@
 import { useEffect, useRef, useCallback } from "react";
 import { graphConfigStore } from "../store/graphConfigStore";
 import { isActionNode, isContentNode } from "../utils/graphUtils";
-import {
-  forceX,
-  forceY,
-  forceZ,
-  forceCollide,
-  forceManyBody,
-} from "d3-force-3d";
+import { forceX, forceY, forceZ, forceCollide } from "d3-force-3d";
 
-const SPAWN_RAMP_TICKS = 8; // Bumped slightly for a smoother outward pop transition
+const SPAWN_RAMP_TICKS = 10;
+const ORBIT_RADIUS = 18;
 
 export function useGraphPhysics(instanceRef, dimension) {
-  const charge = graphConfigStore((s) => s.forces.charge);
-  const distance = graphConfigStore((s) => s.forces.distance);
-  const gravity = graphConfigStore((s) => s.forces.gravity);
-  const linkStrength = graphConfigStore((s) => s.forces.linkStrength);
-
   const ready = useRef(false);
+  const forcesRef = useRef(graphConfigStore.getState().forces);
 
-  const applyForcesRef = useRef(null);
-  const updateLinkForceRef = useRef(null);
-
+  // ✅ Always keep latest slider values
   useEffect(() => {
-    ready.current = false;
-  }, [dimension]);
+    const unsub = graphConfigStore.subscribe((state) => {
+      forcesRef.current = state.forces;
 
-  const applyForces = useCallback(() => {
-    const fg = instanceRef.current;
-    if (!fg?.d3Force) return;
+      const fg = instanceRef.current;
+      if (!fg?.d3Force) return;
 
-    const { charge, gravity, distance } = graphConfigStore.getState().forces;
-    const g = gravity / 100;
+      applyForces(fg);
+      updateLinkForce(fg);
+      fg.d3ReheatSimulation?.();
+    });
 
-    fg.d3Force("charge")?.strength((node) =>
-      isActionNode(node.id) || isContentNode(node.id) ? 0 : -10 * (charge + 1),
-    );
-
-    fg.d3Force(
-      "menu-charge",
-      forceManyBody().strength((node) => {
-        if (!(isActionNode(node.id) || isContentNode(node.id))) return 0;
-        if (node.spawning) return 0;
-        return -4 * (charge + 1); // Amplified slightly to prevent tight crowding
-      }),
-    );
-
-    fg.d3Force(
-      "transient-collide",
-      forceCollide((node) => {
-        if (!(isActionNode(node.id) || isContentNode(node.id))) return 0;
-        // Keep a tiny base boundary radius even while spawning to prevent dead-center stacking
-        if (node.spawning) return distance * 0.05;
-        return distance * 0.18; // Increased slightly for optimal visual breathing room
-      }).strength(0.8),
-    );
-
-    fg.d3Force("gravity", null);
-    if (dimension === "3d") {
-      fg.d3Force("center-x", forceX(0).strength(g));
-      fg.d3Force("center-y", forceY(0).strength(g));
-      fg.d3Force("center-z", forceZ(0).strength(g));
-    } else {
-      fg.d3Force("center-x", forceX(0).strength(g));
-      fg.d3Force("center-y", forceY(0).strength(g));
-    }
-  }, [dimension, instanceRef]);
-
-  applyForcesRef.current = applyForces;
-
-  const updateLinkForce = useCallback(() => {
-    const fg = instanceRef.current;
-    if (!fg?.d3Force) return;
-
-    const linkForce = fg.d3Force("link");
-    if (!linkForce) return;
-
-    const globalDistance = graphConfigStore.getState().forces.distance;
-    const globalStrength = graphConfigStore.getState().forces.linkStrength;
-
-    linkForce
-      .distance((link) => {
-        const targetId =
-          typeof link.target === "object" ? link.target.id : link.target;
-        const sourceId =
-          typeof link.source === "object" ? link.source.id : link.source;
-
-        if (
-          isActionNode(targetId) ||
-          isActionNode(sourceId) ||
-          isContentNode(targetId) ||
-          isContentNode(sourceId)
-        ) {
-          return link.linkDistance || globalDistance * 0.35;
-        }
-        return link.linkDistance || globalDistance;
-      })
-      .strength((link) => {
-        const targetId =
-          typeof link.target === "object" ? link.target.id : link.target;
-        const sourceId =
-          typeof link.source === "object" ? link.source.id : link.source;
-
-        if (
-          isActionNode(targetId) ||
-          isActionNode(sourceId) ||
-          isContentNode(targetId) ||
-          isContentNode(sourceId)
-        ) {
-          return 1.0;
-        }
-        return link.linkStrength ?? globalStrength;
-      });
+    return unsub;
   }, [instanceRef]);
 
-  updateLinkForceRef.current = updateLinkForce;
+  // ----------------------------
+  // FORCES (ONLY PLACE THAT TOUCHES PHYSICS)
+  // ----------------------------
+  const applyForces = useCallback(
+    (fg) => {
+      if (!fg?.d3Force) return;
 
-  useEffect(() => {
+      const { charge, gravity } = forcesRef.current;
+
+      // --- SAFE CHARGE (no explosions)
+      fg.d3Force("charge")?.strength((node) => {
+        if (isActionNode(node.id) || isContentNode(node.id)) return 0;
+
+        const age =
+          node.spawning && node.spawnAge != null
+            ? Math.min(node.spawnAge / SPAWN_RAMP_TICKS, 1)
+            : 1;
+
+        return -charge * 25 * age;
+      });
+
+      // --- CENTERING (stable)
+      const g = gravity * 0.02;
+
+      fg.d3Force("gravity", null);
+
+      fg.d3Force("center-x", forceX(0).strength(g));
+      fg.d3Force("center-y", forceY(0).strength(g));
+
+      if (dimension === "3d") {
+        fg.d3Force("center-z", forceZ(0).strength(g));
+      } else {
+        fg.d3Force("center-z", null);
+      }
+
+      // --- COLLISION (prevents overlaps that cause explosions)
+      fg.d3Force("collide", forceCollide((n) => n.radius ?? 8).strength(0.7));
+    },
+    [dimension],
+  );
+
+  // ----------------------------
+  // LINK FORCE (stable, no NaN risk)
+  // ----------------------------
+  const updateLinkForce = useCallback((fg) => {
+    if (!fg?.d3Force) return;
+
+    const link = fg.d3Force("link");
+    if (!link) return;
+
+    const { distance, linkStrength } = forcesRef.current;
+
+    link
+      .distance((l) => {
+        const t = typeof l.target === "object" ? l.target : null;
+
+        const age =
+          t?.spawning && t.spawnAge != null
+            ? Math.min(t.spawnAge / SPAWN_RAMP_TICKS, 1)
+            : 1;
+
+        const base = l.linkDistance ?? distance;
+
+        return ORBIT_RADIUS + (base - ORBIT_RADIUS) * age;
+      })
+      .strength((l) => l.linkStrength ?? linkStrength);
+  }, []);
+
+  // ----------------------------
+  // INIT
+  // ----------------------------
+  const onGraphReady = useCallback(() => {
     const fg = instanceRef.current;
     if (!fg?.d3Force) return;
-    try {
-      applyForces();
-      if (ready.current) fg.d3ReheatSimulation?.();
-    } catch (e) {
-      console.warn("[useGraphPhysics] force setup error", e);
-    }
-  }, [charge, gravity, distance, dimension, applyForces]);
 
-  useEffect(() => {
-    updateLinkForce();
-    const fg = instanceRef.current;
-    if (ready.current && fg) fg.d3ReheatSimulation?.();
-  }, [distance, linkStrength, updateLinkForce]);
+    applyForces(fg);
+    updateLinkForce(fg);
+    fg.d3ReheatSimulation?.();
+  }, [applyForces, updateLinkForce]);
 
   const gentleReheat = useCallback(() => {
     const fg = instanceRef.current;
-    if (!fg?.d3ReheatSimulation) return;
-    try {
-      fg.d3ReheatSimulation();
-    } catch (e) {
-      console.warn("[useGraphPhysics] gentleReheat", e);
-    }
+    const sim = fg?.d3Simulation?.();
+    if (!sim) return;
+
+    sim.alpha(Math.max(sim.alpha(), 0.25)).restart();
   }, [instanceRef]);
 
+  // ----------------------------
+  // ENGINE TICK (ONLY SAFE STATE UPDATES)
+  // ----------------------------
   const onEngineTick = useRef(() => {
     const fg = instanceRef.current;
-    if (!fg?.d3Force) return;
+    const sim = fg?.d3Simulation?.();
+    if (!sim) return;
 
-    // 💥 FIXED: Instead of fetching static base stores, grab the complete running physics tree directly from D3
-    const liveSimulationNodes =
-      fg.d3Simulation?.nodes() || fg.getGraphBbox?.() || [];
-    if (!liveSimulationNodes.length) return;
+    const nodes = sim.nodes();
+    if (!nodes?.length) return;
 
     if (!ready.current) {
       ready.current = true;
-      updateLinkForceRef.current?.();
+      updateLinkForce(fg);
       return;
     }
 
-    // VELOCITY CLAMPING
-    const MAX_VELOCITY = 1;
-    liveSimulationNodes.forEach((node) => {
-      if (!isActionNode(node.id) && !isContentNode(node.id)) {
-        if (node.vx > MAX_VELOCITY) node.vx = MAX_VELOCITY;
-        if (node.vx < -MAX_VELOCITY) node.vx = -MAX_VELOCITY;
-        if (node.vy > MAX_VELOCITY) node.vy = MAX_VELOCITY;
-        if (node.vy < -MAX_VELOCITY) node.vy = -MAX_VELOCITY;
-      }
-    });
+    for (const n of nodes) {
+      // ✅ HARD SAFETY: prevent NaN explosions
+      n.vx = n.vx || 0;
+      n.vy = n.vy || 0;
+      if (dimension === "3d") n.vz = n.vz || 0;
 
-    // SPAWN RAMP CALCULATION
-    liveSimulationNodes.forEach((node) => {
-      if (!node.spawning) return;
-      node.spawnAge = (node.spawnAge ?? 0) + 1;
-      if (node.spawnAge >= SPAWN_RAMP_TICKS) {
-        node.spawning = false;
-      }
-    });
+      // ✅ spawn ramp ONLY (no physics interference)
+      if (!n.spawning) continue;
 
-    applyForcesRef.current?.();
+      n.spawnAge = (n.spawnAge ?? 0) + 1;
+
+      if (n.spawnAge >= SPAWN_RAMP_TICKS) {
+        n.spawning = false;
+      }
+    }
   }).current;
 
+  // ----------------------------
+  // RESET
+  // ----------------------------
   const resetReady = useCallback(() => {
     ready.current = false;
   }, []);
 
-  return { onEngineTick, gentleReheat, resetReady };
+  return {
+    onEngineTick,
+    gentleReheat,
+    resetReady,
+    onGraphReady,
+  };
 }

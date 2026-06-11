@@ -13,10 +13,8 @@ export default function Graph() {
   // 💥 Clean execution entry point
   const { graphData, toggleSkill, toggleAction } = useCompiledGraph();
 
-  const { onEngineTick, gentleReheat, resetReady } = useGraphPhysics(
-    fgRef,
-    dimension,
-  );
+  const { onEngineTick, gentleReheat, resetReady, onGraphReady } =
+    useGraphPhysics(fgRef, dimension);
   const onNodeClick = useNodeClick(gentleReheat, toggleSkill, toggleAction);
 
   useEffect(() => {
@@ -31,8 +29,8 @@ export default function Graph() {
     () => ({
       graphData,
       linkId: "id",
-      d3AlphaDecay: 0.03,
-      d3VelocityDecay: 0.3,
+      d3AlphaDecay: 0.01,
+      d3VelocityDecay: 0.55,
     }),
     [graphData],
   );

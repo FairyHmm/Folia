@@ -15,10 +15,10 @@ export const graphConfigStore = create(
       },
 
       forces: {
-        charge: 10,
+        charge: 5,
         gravity: 2.5,
-        distance: 10,
-        linkStrength: 1,
+        distance: 80,
+        linkStrength: 0.5,
       },
 
       interaction: {},
