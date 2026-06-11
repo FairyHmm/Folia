@@ -27,7 +27,7 @@ export const graphPanel = [
         label: "Node Size",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 0.1, max: 5, step: 0.1 },
+        props: { size: "xs", min: 0.1, max: 20, step: 0.1 },
       },
       // --- Glow Layer ---
       {
@@ -100,7 +100,7 @@ export const graphPanel = [
         label: "Link Distance",
         component: Slider,
         layout: "stack",
-        props: { size: "xs", min: 10, max: 150, step: 5 },
+        props: { size: "xs", min: 50, max: 200, step: 5 },
       },
       {
         id: "linkStrength",

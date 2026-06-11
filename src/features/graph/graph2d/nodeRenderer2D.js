@@ -51,6 +51,8 @@ export function renderNode2D(node, ctx, scale, showLabels, style) {
     const glow = getGlowGradient(ctx, node, style);
     ctx.save();
     ctx.translate(x, y);
+
+    ctx.globalCompositeOperation = "lighter";
     ctx.globalAlpha = style.glowOpacity;
     ctx.beginPath();
     ctx.arc(0, 0, style.glowRadius, 0, Math.PI * 2);

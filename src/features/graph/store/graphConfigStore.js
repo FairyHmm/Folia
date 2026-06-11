@@ -6,7 +6,7 @@ export const graphConfigStore = create(
     (set) => ({
       display: {
         dimension: "2d",
-        nodeSize: 1,
+        nodeSize: 8,
         glowSize: 1,
         glowOpacity: 0.6,
         ringSize: 1.5,
@@ -15,10 +15,10 @@ export const graphConfigStore = create(
       },
 
       forces: {
-        charge: 5,
+        charge: 20,
         gravity: 2.5,
-        distance: 80,
-        linkStrength: 0.5,
+        distance: 100,
+        linkStrength: 1,
       },
 
       interaction: {},

@@ -10,7 +10,6 @@ export default function Graph() {
   const fgRef = useRef(null);
   const dimension = graphConfigStore((s) => s.display.dimension);
 
-  // 💥 Clean execution entry point
   const { graphData, toggleSkill, toggleAction } = useCompiledGraph();
 
   const { onEngineTick, gentleReheat, resetReady, onGraphReady } =
@@ -18,8 +17,9 @@ export default function Graph() {
   const onNodeClick = useNodeClick(gentleReheat, toggleSkill, toggleAction);
 
   useEffect(() => {
-    resetReady();
-  }, [graphData, resetReady]);
+    resetReady?.();
+    onGraphReady?.();
+  }, [graphData, resetReady, onGraphReady]);
 
   const setGraphRef = useCallback((instance) => {
     fgRef.current = instance;
@@ -29,13 +29,13 @@ export default function Graph() {
     () => ({
       graphData,
       linkId: "id",
-      d3AlphaDecay: 0.01,
-      d3VelocityDecay: 0.55,
+      d3AlphaDecay: 0.004,
+      d3VelocityDecay: 0.3,
     }),
     [graphData],
   );
 
-  const handleLinkColor = useCallback((link) => link.color || "#fffa", []);
+  const handleLinkColor = useCallback((link) => link.color || "#fff8", []);
 
   return dimension === "2d" ? (
     <Graph2D

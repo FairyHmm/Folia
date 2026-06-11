@@ -54,14 +54,14 @@ export const PROFICIENCY_COLOR = {
 };
 
 export const RELEVANCE_SIZE = {
-  [Relevance.NEGLIGIBLE]: 0.4,
-  [Relevance.LOW]: 0.7,
-  [Relevance.MODERATE]: 1.0,
-  [Relevance.HIGH]: 1.4,
-  [Relevance.CRITICAL]: 1.8,
+  [Relevance.NEGLIGIBLE]: 1,
+  [Relevance.LOW]: 1.3,
+  [Relevance.MODERATE]: 1.8,
+  [Relevance.HIGH]: 2.5,
+  [Relevance.CRITICAL]: 3.2,
 };
 
-export const DEFAULT_SIZE = 0.4;
+export const DEFAULT_SIZE = 1;
 
 export const RING = {
   multiplier: 1.4,
