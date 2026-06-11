@@ -1,6 +1,9 @@
 import { useCallback } from "react";
 import { useAnalyseStore } from "../store/analyseStore";
-import { buildRevealData, getRelatedMissingNodes } from "../utils/revealQueueBuilder";
+import {
+  buildRevealData,
+  getRelatedMissingNodes,
+} from "../utils/revealQueueBuilder";
 import { ANALYSE_CONFIG } from "../utils/analyseConfig";
 import { smoothScrollTo, scrollToLine, wait } from "../utils/smoothScroll";
 import { graphDataStore } from "../../../shared/store/graphDataStore";
@@ -15,24 +18,37 @@ function getPage(token, pageBreaks) {
   return page;
 }
 
+const MAX_SPEED = 3;
+
 export function useFlyingPhase(paperRef, containerRef, snap) {
   return useCallback(
     async (cvData, allTokens, cancelled) => {
       const addNode = graphDataStore.getState().addNode;
       const { pageBreaks, pageScrollTops } = useAnalyseStore.getState();
-      const { nodeMap, linkMap, mentionedIds, fullGraph } =
-        buildRevealData(cvData, allTokens);
 
-      // Map tokens to nodes in appearance order
+      const { nodeMap, linkMap, mentionedIds, fullGraph } = buildRevealData(
+        cvData,
+        allTokens,
+      );
+
       const tokensWithNodes = [];
       for (const token of allTokens) {
         const node = nodeMap.get(token.value);
         if (node) tokensWithNodes.push({ token, node });
       }
 
-      // Bucket tokens by page
+      const total = Math.max(tokensWithNodes.length, 1);
+      let processed = 0;
+
+      const getSpeed = () => {
+        const progress = processed / total;
+        const eased = progress * progress; // acceleration curve
+        return 1 + eased * (MAX_SPEED - 1);
+      };
+
       const totalPages = pageBreaks.length + 1;
       const byPage = Array.from({ length: totalPages }, () => []);
+
       tokensWithNodes.forEach((item) => {
         byPage[getPage(item.token, pageBreaks)].push(item);
       });
@@ -41,47 +57,68 @@ export function useFlyingPhase(paperRef, containerRef, snap) {
 
       for (let pi = 0; pi < totalPages; pi++) {
         if (cancelled.current) return;
+
         const pageItems = byPage[pi];
         if (!pageItems.length) continue;
 
-        // Scroll to this page's stored position
         const paper = paperRef.current;
         if (paper) {
-          const targetScrollTop =
-            pi === 0 ? 0 : (pageScrollTops[pi - 1] ?? 0);
+          const targetScrollTop = pi === 0 ? 0 : (pageScrollTops[pi - 1] ?? 0);
+
           if (Math.abs(paper.scrollTop - targetScrollTop) > 2) {
+            const speed = getSpeed();
+
             await smoothScrollTo(
               paper,
               targetScrollTop,
-              ANALYSE_CONFIG.SCROLL_DURATION
+              ANALYSE_CONFIG.SCROLL_DURATION / speed,
             );
-            await wait(300);
+
+            await wait(300 / speed);
           }
         }
 
-        // Snap positions for all currently visible tokens
         const positions = await snap(paperRef, containerRef, allTokens);
+
         useAnalyseStore.getState().replaceTokenPositions(positions);
-        await wait(100);
+
+        await wait(100 / getSpeed());
 
         let lastTokenHadPosition = false;
 
         for (const { token, node } of pageItems) {
           if (cancelled.current) return;
 
+          processed++;
+
+          const speed = getSpeed();
+
           let hasPosition =
             !!useAnalyseStore.getState().tokenPositions[token.id];
 
-          // Fallback: scroll minimally to bring the token into view, re-snap
           if (!hasPosition) {
             const paper = paperRef.current;
+
             if (paper) {
               const lineEl = paper.querySelectorAll("p")[token.lineIndex];
+
               if (lineEl) {
-                await scrollToLine(paper, lineEl, ANALYSE_CONFIG.SCROLL_DURATION);
-                const newPositions = await snap(paperRef, containerRef, allTokens);
+                await scrollToLine(
+                  paper,
+                  lineEl,
+                  ANALYSE_CONFIG.SCROLL_DURATION / speed,
+                );
+
+                const newPositions = await snap(
+                  paperRef,
+                  containerRef,
+                  allTokens,
+                );
+
                 useAnalyseStore.getState().replaceTokenPositions(newPositions);
-                await wait(100);
+
+                await wait(100 / speed);
+
                 hasPosition =
                   !!useAnalyseStore.getState().tokenPositions[token.id];
               }
@@ -92,42 +129,53 @@ export function useFlyingPhase(paperRef, containerRef, snap) {
             lastTokenHadPosition = true;
 
             useAnalyseStore.getState().setTokenState(token.id, "hovering");
-            await wait(ANALYSE_CONFIG.HOVER_DURATION);
+
+            await wait(ANALYSE_CONFIG.HOVER_DURATION / speed);
 
             useAnalyseStore.getState().setTokenState(token.id, "flying");
+
             addNode(node, linkMap.get(node.id) ?? []);
-            await wait(ANALYSE_CONFIG.FLY_DURATION);
+
+            await wait(ANALYSE_CONFIG.FLY_DURATION / speed);
 
             useAnalyseStore.getState().setTokenState(token.id, "gone");
 
             const remaining = Math.max(
               0,
-              interval - ANALYSE_CONFIG.HOVER_DURATION - ANALYSE_CONFIG.FLY_DURATION
+              interval -
+                ANALYSE_CONFIG.HOVER_DURATION -
+                ANALYSE_CONFIG.FLY_DURATION,
             );
-            await wait(remaining);
+
+            await wait(remaining / speed);
+
             interval *= ANALYSE_CONFIG.FLY_ACCEL;
           } else {
             lastTokenHadPosition = false;
+
             addNode(node, linkMap.get(node.id) ?? []);
-            await wait(ANALYSE_CONFIG.MISSING_NODE_INTERVAL);
+
+            await wait(ANALYSE_CONFIG.MISSING_NODE_INTERVAL / speed);
           }
         }
 
-        // Let the last clone finish flying before scrolling to the next page
         if (lastTokenHadPosition) {
-          await wait(ANALYSE_CONFIG.FLY_DURATION);
+          await wait(ANALYSE_CONFIG.FLY_DURATION / getSpeed());
         }
       }
 
-      // Quietly add related nodes that were never mentioned in the CV
-      await wait(ANALYSE_CONFIG.FADE_DURATION * 0.5);
+      await wait((ANALYSE_CONFIG.FADE_DURATION * 0.5) / getSpeed());
+
       const relatedMissing = getRelatedMissingNodes(mentionedIds, fullGraph, 4);
+
       for (const node of relatedMissing) {
         if (cancelled.current) return;
+
         addNode(node, linkMap.get(node.id) ?? []);
-        await wait(ANALYSE_CONFIG.MISSING_NODE_INTERVAL);
+
+        await wait(ANALYSE_CONFIG.MISSING_NODE_INTERVAL / getSpeed());
       }
     },
-    [paperRef, containerRef, snap]
+    [paperRef, containerRef, snap],
   );
 }
