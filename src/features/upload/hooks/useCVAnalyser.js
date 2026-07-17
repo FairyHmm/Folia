@@ -1,5 +1,4 @@
 import { useState } from "react";
-import dummyDataAI from "../../../shared/data/dummyDataAI.json";
 import { setCVData } from "../../../shared/store/cvStore";
 import { setMode } from "../../layout/store/layoutStore";
 
@@ -11,12 +10,23 @@ export function useCVAnalyser() {
     setLoading(true);
 
     try {
-      // Fake AI call — replace with real API call later
-      await new Promise((r) => setTimeout(r, 800));
-      setCVData(dummyDataAI);
+      const res = await fetch("/api/process", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: "Analysis failed" }));
+        throw new Error(err.error || `Server error ${res.status}`);
+      }
+
+      const data = await res.json();
+      setCVData(data);
       setMode("analyse");
     } catch (error) {
       console.error("Analysis failed:", error);
+      throw error;
     } finally {
       setLoading(false);
     }

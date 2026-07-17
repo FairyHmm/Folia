@@ -7,8 +7,12 @@
   "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "vite",
+    "dev:py": "python serve.py",
+    "dev:node": "vercel dev --listen 3001",
     "build": "vite build --base ./",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "link": "vercel link",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "@google/genai": "^2.8.0",

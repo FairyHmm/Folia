@@ -1,0 +1,20 @@
+{
+  "_comment": "Per-role skill relevance. Use frequency (%) from role_skill_matrix.csv to set values.",
+
+  "roles": ["AI Engineer", "Software Engineer"],
+
+  "relevance": {
+    "AI Engineer": {
+      "CRITICAL": ["Python", "PyTorch", "LLM", "RAG", "Machine Learning", "Deep Learning", "Prompt Engineering", "Fine-tuning"],
+      "HIGH": ["Computer Vision", "Natural Language Processing", "Scikit-learn", "Hugging Face Transformers", "vLLM", "Data Preprocessing", "Model Evaluation", "Pandas", "NumPy", "OpenCV", "FastAPI", "Docker"],
+      "MODERATE": ["C/C++", "AI-assisted Coding", "Git", "GitHub"],
+      "LOW": ["Jupyter Notebook", "Google Colab", "Kaggle", "React", "TypeScript", "HTML", "CSS", "JavaScript"]
+    },
+    "Software Engineer": {
+      "CRITICAL": ["JavaScript", "TypeScript", "React", "HTML", "CSS", "Data Structures"],
+      "HIGH": ["Python", "Git", "GitHub", "REST", "FastAPI", "Docker", "SQL", "PostgreSQL", "MongoDB", "C/C++"],
+      "MODERATE": ["AWS", "Kubernetes", "LLM", "RAG", "Redis"],
+      "LOW": ["Machine Learning", "Deep Learning", "PyTorch", "Computer Vision", "OpenCV"]
+    }
+  }
+}

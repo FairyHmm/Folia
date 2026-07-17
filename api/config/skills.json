@@ -1,0 +1,22 @@
+{
+  "_comment": "Valid skill names. Keys must match node IDs in roleSchema.json.",
+
+  "skills": [
+    "Python", "C/C++", "PyTorch", "Scikit-learn", "Pandas", "NumPy",
+    "Machine Learning", "Deep Learning", "LLM", "RAG",
+    "Prompt Engineering", "Fine-tuning", "Computer Vision",
+    "Natural Language Processing", "OpenCV", "Hugging Face Transformers",
+    "vLLM", "LangChain", "Jupyter Notebook", "Google Colab", "Kaggle",
+    "Data Preprocessing", "Model Evaluation", "AI-assisted Coding",
+    "MLflow", "Weights & Biases",
+    "HTML", "CSS", "JavaScript", "TypeScript", "GraphQL", "gRPC",
+    "React", "Angular", "Vue", "Flask", "Django",
+    "FastAPI", "Docker", "REST",
+    "AWS", "Azure", "GCP", "Kubernetes", "Terraform", "Ansible",
+    "GitHub Actions", "GitLab CI", "Jenkins", "OAuth2", "JWT",
+    "SonarQube", "OWASP ZAP",
+    "SQL", "PostgreSQL", "MySQL", "MongoDB", "Redis", "Cassandra",
+    "Git", "GitHub", "Data Structures", "LaTeX", "Overleaf",
+    "Deployment & APIs", "Vector Databases"
+  ]
+}

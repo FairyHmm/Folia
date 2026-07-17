@@ -1,0 +1,14 @@
+{
+  "_comment": "Section detection keywords. Key = canonical name, value = keyword list (vi + en).",
+
+  "sections": {
+    "skills": ["skills", "kỹ năng", "technical skills", "công nghệ", "chuyên môn", "competencies"],
+    "experience": ["experience", "work experience", "kinh nghiệm", "công việc", "thực tập", "activities", "hoạt động"],
+    "projects": ["projects", "dự án", "research", "nghiên cứu", "portfolio"],
+    "education": ["education", "học vấn", "academic", "giáo dục"],
+    "summary": ["summary", "objective", "profile", "mục tiêu", "tổng quan", "giới thiệu"],
+    "personal_info": ["contact", "personal information", "liên hệ", "thông tin cá nhân"],
+    "certifications": ["certifications", "chứng chỉ", "licenses"],
+    "achievements": ["achievements", "awards", "giải thưởng", "thành tích"]
+  }
+}

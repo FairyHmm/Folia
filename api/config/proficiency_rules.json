@@ -1,0 +1,14 @@
+{
+  "_comment": "Proficiency classification rules. Keyword match determines level. Year-based rules below.",
+
+  "rules": [
+    { "level": "EXPERT", "keywords": ["expert", "advanced", "master", "proficient", "deep understanding", "nhiều năm", "chuyên gia", "thành thạo", "5+ years", "senior"] },
+    { "level": "BASIC",  "keywords": ["basic", "beginner", "learning", "introductory", "familiar", "cơ bản", "đang học", "quan tâm", "exposure"] }
+  ],
+
+  "years_regex": "(\\d+)\\+?\\s*(?:năm|year|yoe|yrs)",
+  "years_expert_min": 3,
+  "years_experienced_min": 1,
+
+  "default_level": "EXPERIENCED"
+}

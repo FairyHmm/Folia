@@ -1,0 +1,5 @@
+{
+  "_comment": "Valid target roles. Must match titles in roleSchema.json.",
+
+  "roles": ["AI Engineer", "Software Engineer"]
+}
