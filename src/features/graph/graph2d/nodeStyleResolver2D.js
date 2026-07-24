@@ -29,10 +29,12 @@ export function resolveNode2D(node, scale, display = {}) {
   const radius =
     tier.multiplier * styles.sizeMultiplier * (display.nodeSize ?? 1);
   const labelPosition = styles.labelPosition || "below";
+  const baseFontSize = 6 * tier.multiplier;
+  const scaledFontSize = baseFontSize * Math.pow(scale, 0.4);
   const textYOffset =
     labelPosition === "inside"
       ? 0
-      : radius + (8 / scale) * tier.multiplier * 0.4;
+      : radius + scaledFontSize * 0.4;
 
   let s = styleCache.get(node.id);
   if (!s) {
@@ -71,7 +73,7 @@ export function resolveNode2D(node, scale, display = {}) {
     ? (display.ringOpacity ?? CORE_TOKENS.ringOpacity3D) * dimFactor
     : 0;
   s.ringThickness = display.ringThickness ?? 1;
-  s.font = `500 ${(8 / scale) * tier.multiplier}px ${CORE_TOKENS.fontFamily}`;
+  s.font = `500 ${scaledFontSize}px ${CORE_TOKENS.fontFamily}`;
   s.textColor = dimColor(CORE_TOKENS.textStyle, lerp(0.45, 1, s.focus));
   s.textAlign = "center";
   s.textBaseline = labelPosition === "inside" ? "middle" : "top";

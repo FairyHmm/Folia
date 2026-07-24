@@ -5,16 +5,17 @@ const getId = (v) => (typeof v === "object" && v !== null ? v.id : v);
 export const graphDataStore = create((set, get) => ({
   graphData: { nodes: [], links: [] },
   pendingLinks: [],
+  _version: 0,
 
   addNode: (node, links = []) => {
-    const { graphData, pendingLinks } = get();
+    const { graphData, pendingLinks, _version } = get();
     const { nodes, links: existingLinks } = graphData;
     // TEMP DEBUG — remove once the empty-graph issue is confirmed fixed.
     console.log("[graphDataStore debug] addNode called:", node?.id, "already present:", nodes.some((n) => n.id === node?.id));
     if (nodes.some((n) => n.id === node.id)) return;
 
-    const newNodes = [...nodes, node];
-    const nodeIds = new Set(newNodes.map((n) => n.id));
+    nodes.push(node);
+    const nodeIds = new Set(nodes.map((n) => n.id));
 
     const normalised = [
       ...pendingLinks,
@@ -31,9 +32,12 @@ export const graphDataStore = create((set, get) => ({
       (l) => !nodeIds.has(l.source) || !nodeIds.has(l.target)
     );
 
+    existingLinks.push(...resolved);
+
     set({
-      graphData: { nodes: newNodes, links: [...existingLinks, ...resolved] },
+      graphData: { nodes, links: existingLinks },
       pendingLinks: stillPending,
+      _version: _version + 1,
     });
   },
 
@@ -43,5 +47,5 @@ export const graphDataStore = create((set, get) => ({
     Object.assign(node, patch);
   },
 
-  clearGraph: () => set({ graphData: { nodes: [], links: [] }, pendingLinks: [] }),
+  clearGraph: () => set({ graphData: { nodes: [], links: [] }, pendingLinks: [], _version: 0 }),
 }));

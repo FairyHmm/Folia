@@ -16,7 +16,9 @@
   overflow-y: hidden;
   overflow-x: visible;
   scrollbar-width: none;
-  background: var(--mantine-color-body);
+  background: oklch(from var(--mantine-color-body) l c h / 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--mantine-color-default-border);
   border-radius: var(--mantine-radius-lg);
   padding: 1.75rem 2rem;

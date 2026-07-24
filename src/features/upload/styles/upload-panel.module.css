@@ -9,6 +9,8 @@
   border: var(--border-styles);
 
   background-color: oklch(from var(--mantine-color-body) l c h / 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 
   .header {
     border-bottom: var(--border-styles);

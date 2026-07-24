@@ -11,10 +11,12 @@ export function buildRevealData(cvData, tokens) {
   }
 
   for (const link of fullGraph.links) {
-    if (!linkMap.has(link.source)) {
-      linkMap.set(link.source, []);
-    }
+    if (!linkMap.has(link.source)) linkMap.set(link.source, []);
     linkMap.get(link.source).push(link);
+    // Also index by target so incoming links are registered when the
+    // target node arrives, not just when the source does.
+    if (!linkMap.has(link.target)) linkMap.set(link.target, []);
+    linkMap.get(link.target).push(link);
   }
 
   const mentionedIds = new Set(tokens.map((t) => t.value));
@@ -27,12 +29,25 @@ export function buildRevealData(cvData, tokens) {
     (n) => !mentionedIds.has(n.id)
   );
 
+  // Build a child→parent map so we can walk up the ancestor chain
+  // from any skill node without scanning all links each time.
+  const parentMap = new Map();
+  for (const link of fullGraph.links) {
+    parentMap.set(link.target, link.source);
+  }
+
+  const structuralNodes = fullGraph.nodes.filter((n) => n.tier < 4);
+  const skillNodes = fullGraph.nodes.filter((n) => n.tier >= 4);
+
   return {
     nodeMap,
     linkMap,
+    parentMap,
     mentionedNodes,
     mentionedIds,
     missingNodes,
+    structuralNodes,
+    skillNodes,
     fullGraph,
   };
 }

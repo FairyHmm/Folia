@@ -26,10 +26,28 @@ export function useFlyingPhase(paperRef, containerRef, snap) {
       const addNode = graphDataStore.getState().addNode;
       const { pageBreaks, pageScrollTops } = useAnalyseStore.getState();
 
-      const { nodeMap, linkMap, mentionedIds, fullGraph } = buildRevealData(
+      const { nodeMap, linkMap, parentMap, mentionedIds, fullGraph } = buildRevealData(
         cvData,
         allTokens,
       );
+
+      // Lazily ensure a node's full ancestor chain is in the graph before
+      // the node itself arrives. This way structural nodes (role/domain/module)
+      // appear the moment their first child skill flies in — no upfront dump,
+      // no delayed batch. Edges connect immediately since parents are always
+      // present before children.
+      const ensureAncestors = (nodeId) => {
+        const chain = [];
+        let cursor = parentMap.get(nodeId);
+        while (cursor) {
+          chain.unshift(cursor);
+          cursor = parentMap.get(cursor);
+        }
+        for (const ancestorId of chain) {
+          const ancestor = nodeMap.get(ancestorId);
+          if (ancestor) addNode(ancestor, linkMap.get(ancestorId) ?? []);
+        }
+      };
 
       const tokensWithNodes = [];
       for (const token of allTokens) {
@@ -134,6 +152,7 @@ export function useFlyingPhase(paperRef, containerRef, snap) {
 
             useAnalyseStore.getState().setTokenState(token.id, "flying");
 
+            ensureAncestors(node.id);
             addNode(node, linkMap.get(node.id) ?? []);
 
             await wait(ANALYSE_CONFIG.FLY_DURATION / speed);
@@ -153,6 +172,7 @@ export function useFlyingPhase(paperRef, containerRef, snap) {
           } else {
             lastTokenHadPosition = false;
 
+            ensureAncestors(node.id);
             addNode(node, linkMap.get(node.id) ?? []);
 
             await wait(ANALYSE_CONFIG.MISSING_NODE_INTERVAL / speed);
@@ -171,6 +191,7 @@ export function useFlyingPhase(paperRef, containerRef, snap) {
       for (const node of relatedMissing) {
         if (cancelled.current) return;
 
+        ensureAncestors(node.id);
         addNode(node, linkMap.get(node.id) ?? []);
 
         await wait(ANALYSE_CONFIG.MISSING_NODE_INTERVAL / getSpeed());

@@ -4,6 +4,7 @@ import { graphDataStore } from "../../../shared/store/graphDataStore";
 export function useCompiledGraph() {
   const baseNodes = graphDataStore((s) => s.graphData.nodes);
   const baseLinks = graphDataStore((s) => s.graphData.links);
+  const version = graphDataStore((s) => s._version);
 
   const [selectedSkillId, setSelectedSkillId] = useState(null);
 
@@ -16,7 +17,7 @@ export function useCompiledGraph() {
   // useSelectionDimming in Graph.jsx) instead of recomputing this array.
   const graphData = useMemo(
     () => ({ nodes: baseNodes, links: baseLinks }),
-    [baseNodes, baseLinks],
+    [baseNodes, baseLinks, version],
   );
 
   const selectSkill = useCallback((skillId) => {

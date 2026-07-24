@@ -20,21 +20,22 @@
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-
-  /*backdrop-filter: brightness(0.8) blur(4px);
-  -webkit-backdrop-filter: brightness(0.8) blur(4px);*/
 }
 
 .layout-panel {
   position: fixed;
   top: var(--mantine-spacing-lg);
   right: var(--mantine-spacing-lg);
-  /* Was a flat 220px, which eats ~69% of a 320px phone viewport. Scale
-     down on narrow screens instead of hardcoding one width for every
-     breakpoint. */
   width: clamp(160px, 60vw, 220px);
   max-width: calc(100vw - 2 * var(--mantine-spacing-lg));
   z-index: 20;
+
+  background: oklch(from var(--mantine-color-body) l c h / 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: var(--mantine-radius-lg);
+  border: 1px solid oklch(from var(--mantine-color-default-border) l c h / 0.35);
+  padding: var(--mantine-spacing-xs);
 }
 
 @media (max-width: 480px) {

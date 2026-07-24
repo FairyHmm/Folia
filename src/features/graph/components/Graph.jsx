@@ -4,8 +4,9 @@ import { useCompiledGraph } from "../hooks/useCompiledGraph";
 import { useGraphPhysics } from "../hooks/useGraphPhysics";
 import { useNodeClick } from "../hooks/useNodeClick";
 import { isTransientNode } from "../utils/graphUtils";
-import { setMode } from "../../layout/store/layoutStore";
+import { layoutStore, setMode } from "../../layout/store/layoutStore";
 import { lerp } from "../utils/animationUtils";
+import { useAnalyseStore } from "../../analyse/store/analyseStore";
 import Graph2D from "../graph2d/Graph2D";
 import Graph3D from "../graph3d/Graph3D";
 import NodePanel from "./NodePanel";
@@ -13,6 +14,7 @@ import NodePanel from "./NodePanel";
 export default function Graph() {
   const fgRef = useRef(null);
   const dimension = graphConfigStore((s) => s.display.dimension);
+  const activeMode = layoutStore((s) => s.activeMode);
 
   const {
     graphData,
@@ -28,9 +30,16 @@ export default function Graph() {
     useGraphPhysics(fgRef, dimension);
   const onNodeClick = useNodeClick(gentleReheat, selectSkill);
 
+  const prevCountsRef = useRef({ nodes: 0, links: 0 });
   useEffect(() => {
-    resetReady?.();
-    onGraphReady?.();
+    const nodeCount = graphData.nodes.length;
+    const linkCount = graphData.links.length;
+    const prev = prevCountsRef.current;
+    if (nodeCount !== prev.nodeCount || linkCount !== prev.linkCount) {
+      prevCountsRef.current = { nodeCount, linkCount };
+      resetReady?.();
+      onGraphReady?.();
+    }
   }, [graphData, resetReady, onGraphReady]);
 
   // Hover previews focus the same way a click does, without committing to
@@ -103,13 +112,6 @@ export default function Graph() {
   const commonProps = useMemo(
     () => ({
       graphData,
-      linkId: "id",
-      // Previously 0.004 — far below d3's own default (~0.0228). Combined
-      // with the ambient "drift" force continuously reinjecting velocity,
-      // the simulation never actually cooled down, so the whole graph felt
-      // like it never stopped moving. Raised close to default so it settles
-      // into a stable layout; drift still adds a small amount of life on
-      // top once at rest.
       d3AlphaDecay: 0.02,
       d3VelocityDecay: 0.35,
     }),
@@ -162,7 +164,7 @@ export default function Graph() {
   // whatever focus-mode dimming kicks in after activation.
   const structuralNodes = useMemo(
     () => graphData.nodes.filter((n) => !isTransientNode(n.id)),
-    [graphData.nodes],
+    [graphData],
   );
   const keyboardIndexRef = useRef(-1);
 
@@ -233,18 +235,32 @@ export default function Graph() {
   // Previously: zero base nodes just rendered an empty void with the tool
   // panel floating over it — no cue that anything is supposed to happen
   // here. Guide instead of showing nothing.
-  const isEmpty = structuralNodes.length === 0;
+  const isEmpty = structuralNodes.length === 0 && activeMode === "graph";
 
   // Auto-focus on the start node once the graph has actually settled with
   // real data, instead of leaving the camera wherever it happened to land
   // (or requiring a manual click just to find the anchor node).
   const hasAutoFocused = useRef(false);
+  const analysePhase = useAnalyseStore((s) => s.phase);
+
+  // Reset the auto-focus gate whenever the graph is cleared (re-upload),
+  // so the entrance sequence fires again for the new CV.
   useEffect(() => {
-    if (isEmpty || hasAutoFocused.current || !startNode) return;
+    if (baseNodes.length === 0) hasAutoFocused.current = false;
+  }, [baseNodes.length]);
+
+  // Fire once when the flying phase completes — graph is fully built at
+  // this point, so camera + selection land on a stable constellation.
+  useEffect(() => {
+    if (analysePhase !== "done") return;
+    if (hasAutoFocused.current || !startNode) return;
     hasAutoFocused.current = true;
-    const t = setTimeout(() => goToStartNode(), 900);
+    const t = setTimeout(() => {
+      goToStartNode();
+      selectSkill(startNode.id);
+    }, 600);
     return () => clearTimeout(t);
-  }, [isEmpty, startNode, goToStartNode]);
+  }, [analysePhase, startNode, goToStartNode, selectSkill]);
 
   // TEMP DEBUG — remove after diagnosing the persistent empty-state overlay.
   useEffect(() => {

@@ -5,6 +5,7 @@ import { PHASES } from "../utils/analyseConfig";
 import { wait } from "../utils/smoothScroll";
 import { cvStore } from "../../../shared/store/cvStore";
 import { setMode } from "../../layout/store/layoutStore";
+import { graphDataStore } from "../../../shared/store/graphDataStore";
 import { useReadingPhase } from "./useReadingPhase";
 import { useFlyingPhase } from "./useFlyingPhase";
 import { ANALYSE_CONFIG } from "../utils/analyseConfig";
@@ -25,6 +26,7 @@ export function useOrchestrator(paperRef, containerRef, snap) {
     const cancelled = { current: false };
     activeToken.current = cancelled;
 
+    graphDataStore.getState().clearGraph();
     useAnalyseStore.getState().resetAnalyse();
     useAnalyseStore.getState().setPhase(PHASES.READING);
 
