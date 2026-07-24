@@ -92,7 +92,7 @@ export function renderNode2D(node, ctx, scale, showLabels, style) {
   // 3. CORE
   ctx.save();
 
-  ctx.fillStyle = style.color;
+  ctx.fillStyle = style.coreColor ?? style.color;
   renderShape2D(ctx, style.shape, x, y, style.radius);
   ctx.fill();
 

@@ -14,6 +14,16 @@ function hexToRgb(hex) {
   return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
 }
 
+// Darkens/desaturates a hex color toward black by `factor` (1 = untouched,
+// 0 = black). Used for focus-mode dimming instead of a flat opacity drop,
+// since opacity alone doesn't read against additive-blended glow.
+export function dimColor(hex, factor) {
+  if (!hex || factor >= 1) return hex;
+  const [r, g, b] = hexToRgb(hex);
+  const f = Math.max(0, Math.min(1, factor));
+  return `rgb(${Math.round(r * f)}, ${Math.round(g * f)}, ${Math.round(b * f)})`;
+}
+
 export function lerpColor(a, b, t) {
   if (!a || !b) return b ?? a;
 

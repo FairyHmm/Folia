@@ -39,6 +39,18 @@ export default function Upload({ onClose }) {
   const loading = extracting || analysing;
 
   const handleSubmit = async () => {
+    // Dev-only shortcut: drop/select a file named "demo.*" (or paste
+    // "demo") to load the clean dummy dataset directly, skipping both text
+    // extraction and the backend entirely.
+    const isDemo =
+      file?.name?.toLowerCase().includes("demo") ||
+      text?.trim().toLowerCase() === "demo";
+
+    if (isDemo) {
+      await handleAnalyse({ text: "demo", canSubmit: true });
+      return;
+    }
+
     const { text: cleanText } =
       (await extractText({ file, text, canSubmit })) ?? {};
     await handleAnalyse({ text: cleanText, canSubmit });

@@ -17,6 +17,7 @@
     "SonarQube", "OWASP ZAP",
     "SQL", "PostgreSQL", "MySQL", "MongoDB", "Redis", "Cassandra",
     "Git", "GitHub", "Data Structures", "LaTeX", "Overleaf",
-    "Deployment & APIs", "Vector Databases"
+    "Deployment & APIs", "Vector Databases",
+    "Pinecone", "Elasticsearch", "YOLO", "Detectron2"
   ]
 }

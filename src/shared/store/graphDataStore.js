@@ -9,6 +9,8 @@ export const graphDataStore = create((set, get) => ({
   addNode: (node, links = []) => {
     const { graphData, pendingLinks } = get();
     const { nodes, links: existingLinks } = graphData;
+    // TEMP DEBUG — remove once the empty-graph issue is confirmed fixed.
+    console.log("[graphDataStore debug] addNode called:", node?.id, "already present:", nodes.some((n) => n.id === node?.id));
     if (nodes.some((n) => n.id === node.id)) return;
 
     const newNodes = [...nodes, node];

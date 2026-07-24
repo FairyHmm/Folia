@@ -1,7 +1,7 @@
 import { NodeType } from "../../../shared/utils/cvConstants";
 import { TIER_PRESETS, CORE_TOKENS } from "../utils/graphStyleTokens";
 import { applyNodeStyles } from "../utils/styleApplicator";
-import { lerpColor } from "../utils/animationUtils";
+import { lerp, lerpColor, dimColor } from "../utils/animationUtils";
 
 const styleCache = new Map();
 
@@ -45,6 +45,14 @@ export function resolveNode2D(node, scale, display = {}) {
   s.color = lerpColor(s.color || targetColor, targetColor, 0.12);
   s.glowInner = s.color;
 
+  // Smoothed 0→1 focus factor (1 = fully normal, 0 = fully dimmed) instead
+  // of snapping instantly on node.dimmed — makes hover/select focus read
+  // as a fade rather than a jump cut. Persisted per-node in styleCache so
+  // it keeps easing across repaints regardless of how often this runs.
+  const targetFocus = node.dimmed ? 0 : 1;
+  s.focus = lerp(s.focus ?? targetFocus, targetFocus, 0.15);
+  const dimFactor = lerp(0.22, 1, s.focus);
+
   s.radius = radius;
   s.shape = styles.shape;
   s.label = node.label || "";
@@ -54,22 +62,23 @@ export function resolveNode2D(node, scale, display = {}) {
     radius *
     (isAction ? 1.5 : tier.glowMultiplier) *
     (display.glowSize ?? 1);
-  s.glowOpacity = display.glowOpacity ?? CORE_TOKENS.glowOpacity3D;
+  s.glowOpacity = (display.glowOpacity ?? CORE_TOKENS.glowOpacity3D) * dimFactor;
   s.ringRadius = styles.ringColor
     ? radius * styles.ringMultiplier * (display.ringSize ?? 1)
     : 0;
   s.ringColor = styles.ringColor ?? s.color;
   s.ringOpacity = styles.ringColor
-    ? (display.ringOpacity ?? CORE_TOKENS.ringOpacity3D)
+    ? (display.ringOpacity ?? CORE_TOKENS.ringOpacity3D) * dimFactor
     : 0;
   s.ringThickness = display.ringThickness ?? 1;
   s.font = `500 ${(8 / scale) * tier.multiplier}px ${CORE_TOKENS.fontFamily}`;
-  s.textColor = CORE_TOKENS.textStyle;
+  s.textColor = dimColor(CORE_TOKENS.textStyle, lerp(0.45, 1, s.focus));
   s.textAlign = "center";
   s.textBaseline = labelPosition === "inside" ? "middle" : "top";
   s.textYOffset = textYOffset;
   s.visibilityThreshold = tier.visibilityThreshold;
   s.labelPosition = labelPosition;
+  s.coreColor = dimColor(s.color, lerp(0.3, 1, s.focus));
 
   return s;
 }

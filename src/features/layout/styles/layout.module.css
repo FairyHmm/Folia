@@ -29,6 +29,19 @@
   position: fixed;
   top: var(--mantine-spacing-lg);
   right: var(--mantine-spacing-lg);
-  width: 220px;
+  /* Was a flat 220px, which eats ~69% of a 320px phone viewport. Scale
+     down on narrow screens instead of hardcoding one width for every
+     breakpoint. */
+  width: clamp(160px, 60vw, 220px);
+  max-width: calc(100vw - 2 * var(--mantine-spacing-lg));
   z-index: 20;
+}
+
+@media (max-width: 480px) {
+  .layout-panel {
+    top: var(--mantine-spacing-sm);
+    right: var(--mantine-spacing-sm);
+    width: clamp(140px, 52vw, 200px);
+    max-width: calc(100vw - 2 * var(--mantine-spacing-sm));
+  }
 }

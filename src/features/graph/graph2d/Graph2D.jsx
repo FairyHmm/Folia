@@ -9,6 +9,7 @@ const Graph2D = memo(function Graph2DWrapper({
   commonProps,
   onEngineTick,
   onLinkColor,
+  onNodeHover,
   onNodeClick,
 }) {
   const fgInternalRef = useRef(null);
@@ -80,6 +81,7 @@ const Graph2D = memo(function Graph2DWrapper({
       // ✅ Inject the pointer tracking template
       nodePointerAreaPaint={nodePointerAreaPaint}
       linkColor={onLinkColor}
+      onNodeHover={onNodeHover}
       onNodeClick={onNodeClick}
     />
   );

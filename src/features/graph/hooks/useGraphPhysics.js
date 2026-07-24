@@ -11,6 +11,37 @@ import {
 
 const SPAWN_RAMP_TICKS = 8;
 
+// Gentle ambient sway for structural (star) nodes — replaces thermal
+// repulsion. Each node drifts on its own decorrelated phase so the
+// constellation feels alive without nodes visibly pushing each other apart.
+function forceDrift(amplitude = 0.004) {
+  let nodes = [];
+  let phase = [];
+
+  function force(alpha) {
+    const t = Date.now() * 0.00015;
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      if (isActionNode(node.id) || isContentNode(node.id)) continue;
+      if (node.spawning) continue;
+      if (node.fx != null || node.fy != null) continue; // respect pinned/dragged nodes
+      const p = phase[i];
+      node.vx += Math.cos(t + p) * amplitude * alpha;
+      node.vy += Math.sin(t + p * 1.37) * amplitude * alpha;
+      if (node.fz === undefined && typeof node.vz === "number") {
+        node.vz += Math.sin(t * 0.8 + p * 0.6) * amplitude * 0.5 * alpha;
+      }
+    }
+  }
+
+  force.initialize = (n) => {
+    nodes = n;
+    phase = n.map((_, i) => (i * 12.9898) % (Math.PI * 2));
+  };
+
+  return force;
+}
+
 export function useGraphPhysics(instanceRef, dimension) {
   const charge = graphConfigStore((s) => s.forces.charge);
   const distance = graphConfigStore((s) => s.forces.distance);
@@ -31,6 +62,8 @@ export function useGraphPhysics(instanceRef, dimension) {
     if (!fg?.d3Force) return;
     if (!fg.d3Force("menu-charge")) fg.d3Force("menu-charge", forceManyBody());
     if (!fg.d3Force("transient-collide")) fg.d3Force("transient-collide", forceCollide());
+    if (!fg.d3Force("structural-collide")) fg.d3Force("structural-collide", forceCollide());
+    if (!fg.d3Force("drift")) fg.d3Force("drift", forceDrift());
   }, []);
 
   const applyForces = useCallback(() => {
@@ -44,12 +77,24 @@ export function useGraphPhysics(instanceRef, dimension) {
     const g = gravity / 100;
     const distanceScaleFactor = distance / 40;
 
-    // Mutate existing properties directly instead of instantiating new objects on every frame tick
+    // Structural nodes keep a real (but gentler) repulsion so the graph
+    // still spreads out and stays navigable — dropping it to zero caused
+    // everything to clump together, which is the opposite of the goal.
+    // What actually reads as "thermal jitter" is high-frequency velocity
+    // noise, not the presence of spacing force itself; that's handled by
+    // the velocity clamp below and the softer curve here (-4 vs. the old
+    // -10 multiplier). The "drift" force adds ambient sway on top.
     fg.d3Force("charge")?.strength((node) =>
       isActionNode(node.id) || isContentNode(node.id)
         ? 0
-        : -10 * (charge + 1) * distanceScaleFactor,
+        : -4 * (charge + 1) * distanceScaleFactor,
     );
+
+    // Safety-net collision so nodes never fully overlap even at rest.
+    fg.d3Force("structural-collide")?.radius((node) => {
+      if (isActionNode(node.id) || isContentNode(node.id)) return 0;
+      return distance * 0.25 * (charge / 20 + 0.5);
+    }).strength(0.6);
 
     fg.d3Force("menu-charge")?.strength((node) => {
       if (!(isActionNode(node.id) || isContentNode(node.id))) return 0;
@@ -173,8 +218,9 @@ export function useGraphPhysics(instanceRef, dimension) {
       return;
     }
 
-    // VELOCITY CLAMPING
-    const MAX_VELOCITY = 1;
+    // VELOCITY CLAMPING — kept low so ambient drift reads as a slow sway,
+    // not jitter, now that thermal repulsion no longer dominates motion.
+    const MAX_VELOCITY = 0.15;
     liveSimulationNodes.forEach((node) => {
       if (!isActionNode(node.id) && !isContentNode(node.id)) {
         if (node.vx > MAX_VELOCITY) node.vx = MAX_VELOCITY;

@@ -10,18 +10,34 @@ import { useFlyingPhase } from "./useFlyingPhase";
 import { ANALYSE_CONFIG } from "../utils/analyseConfig";
 
 export function useOrchestrator(paperRef, containerRef, snap) {
-  const cancelled = useRef(false);
+  // Holds the cancellation token for whichever run is currently active, so a
+  // second invocation of run() (e.g. React StrictMode's dev-mode double
+  // effect-invoke, or a legitimate re-trigger) cancels the previous one
+  // instead of racing it. Racing manifested as two concurrent reading-phase
+  // loops fighting over scroll position — the "scrolls up and down, never
+  // ends" bug.
+  const activeToken = useRef(null);
   const runReading = useReadingPhase(paperRef);
   const runFlying = useFlyingPhase(paperRef, containerRef, snap);
 
   const run = useCallback(async () => {
-    cancelled.current = false;
+    if (activeToken.current) activeToken.current.current = true; // cancel any prior run
+    const cancelled = { current: false };
+    activeToken.current = cancelled;
+
     useAnalyseStore.getState().resetAnalyse();
     useAnalyseStore.getState().setPhase(PHASES.READING);
 
     const cvData = cvStore.getState().cvData;
     const lines = cvData?.lines ?? [];
     const allTokens = extractTokens(lines);
+
+    // TEMP DEBUG — remove once the empty-graph issue is confirmed fixed.
+    console.log("[orchestrator debug] cvData:", cvData);
+    console.log(
+      "[orchestrator debug] lines:", lines.length,
+      "allTokens:", allTokens.length,
+    );
 
     if (!lines.length) return;
 
@@ -42,7 +58,7 @@ export function useOrchestrator(paperRef, containerRef, snap) {
 
   useEffect(() => {
     return () => {
-      cancelled.current = true;
+      if (activeToken.current) activeToken.current.current = true;
     };
   }, []);
 

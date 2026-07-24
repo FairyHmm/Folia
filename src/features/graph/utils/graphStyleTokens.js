@@ -43,14 +43,20 @@ export const CORE_TOKENS = {
   ringAlpha: "44",
   ringOpacity3D: 0.5,
   glowOpacity3D: 0.6,
+  // Deep indigo-navy void, derived from the theme's darkest oklch step
+  // (oklch(8% 0.085 305)) instead of a flat transparent/black background.
+  spaceBg: "#0b0a16",
 };
 
+// Celestial palette — desaturated + theme-mapped so proficiency reads as
+// starlight temperature (ember -> amber -> jade -> aurora-cyan) rather
+// than raw cyberpunk-terminal hex.
 export const PROFICIENCY_COLOR = {
-  [Proficiency.UNKNOWN]: "#6b7280",
-  [Proficiency.INTERESTED]: "#f71212",
-  [Proficiency.BASIC]: "#ebd710",
-  [Proficiency.EXPERIENCED]: "#12fe69",
-  [Proficiency.EXPERT]: "#0cfef6",
+  [Proficiency.UNKNOWN]: "#7c8296",
+  [Proficiency.INTERESTED]: "#e8724f",
+  [Proficiency.BASIC]: "#e0b64a",
+  [Proficiency.EXPERIENCED]: "#5fd3a0",
+  [Proficiency.EXPERT]: "#5fd0f2",
 };
 
 export const RELEVANCE_SIZE = {
@@ -65,7 +71,7 @@ export const DEFAULT_SIZE = 1;
 
 export const RING = {
   multiplier: 1.4,
-  artifactColor: "#f7cb10",
+  artifactColor: "#e0b64a",
   defaultColor: null,
 };
 
@@ -117,13 +123,13 @@ export function getActionNodeShape(actionType) {
 }
 
 export function getArtifactNodeColor() {
-  return RING.artifactColor || "#facc15";
+  return RING.artifactColor || "#e0b64a";
 }
 
 export function getResourceNodeColor() {
-  return "#38bdf8";
+  return "#5fa8e0";
 }
 
 export function getNoteNodeColor() {
-  return "#a78bfa";
+  return "#a891e0";
 }

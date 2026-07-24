@@ -13,6 +13,14 @@ const GEOMETRY_FACTORIES = {
   circle: (r) => new THREE.SphereGeometry(r, 24, 24),
   square: (r) => new THREE.BoxGeometry(r * 1.4, r * 1.4, r * 1.4),
   triangle: (r) => new THREE.ConeGeometry(r, r * 2, 4),
+  // Action/content nodes read as UI chrome (pills, cards) when built from
+  // flat primitives — swapped for faceted crystal forms so they stay in
+  // the constellation metaphor (gems/debris) while still differentiating
+  // by type via facet count.
+  pill: (r) => new THREE.OctahedronGeometry(r, 0),
+  "card-artifact": (r) => new THREE.IcosahedronGeometry(r, 0),
+  "card-resource": (r) => new THREE.DodecahedronGeometry(r, 0),
+  note: (r) => new THREE.TetrahedronGeometry(r * 1.2, 0),
 };
 
 function getGeometry(shape, radius) {
@@ -90,9 +98,9 @@ function updateNode3D(group, style) {
     ud.radius = style.radius;
   }
   // Core — color
-  if (ud.coreColor !== style.color) {
-    core.material.color.set(style.color);
-    ud.coreColor = style.color;
+  if (ud.coreColor !== style.coreColor) {
+    core.material.color.set(style.coreColor);
+    ud.coreColor = style.coreColor;
   }
 
   // Glow — texture
@@ -202,7 +210,7 @@ function buildNode3D(style) {
   // Core
   const core = new THREE.Mesh(
     getGeometry(style.shape, style.radius),
-    new THREE.MeshBasicMaterial({ color: new THREE.Color(style.color) }),
+    new THREE.MeshBasicMaterial({ color: new THREE.Color(style.coreColor) }),
   );
   core.renderOrder = 2;
 
@@ -221,7 +229,7 @@ function buildNode3D(style) {
     parts: { core, glow, ring, label },
     shape: style.shape,
     radius: style.radius,
-    coreColor: style.color,
+    coreColor: style.coreColor,
     glowColor: style.color,
     glowThickness: style.ringThickness,
     glowOpacity: style.glowOpacity,
